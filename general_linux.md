@@ -28,6 +28,14 @@ running a script once after Gnome starts up, e.g. for mounting SMB-Shares.
 enter the `gnome-session-properties` configuration tool and add a script
 
 ---
+## Coding
+### setting up Git
+- check status: `git config --list --show-origin`  
+- add user name: `git config --global user.name "yourusername"`  
+- add email: `git config --global user.email "email@youremail.com"`  
+--> settings will be added to ~/.gitconfig file
+
+---
 
 ## Setting up SSH with keys
 ### adding hosts
