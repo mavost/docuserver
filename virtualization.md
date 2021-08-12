@@ -120,4 +120,34 @@ Wired connection 1  56f32c14-a4d2-32c8-9391-f51967efa173  ethernet  --
 ### edit virtual machine shutdown behavior
 [source](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/virtualization_deployment_and_administration_guide/sect-shutting_down_rebooting_and_force_shutdown_of_a_guest_virtual_machine-manipulating_the_libvirt_guests_configuration_settings)  
 `sudo nano /usr/lib/libvirt/libvirt-guests.sh`  
+--> apparently slightly bugged on Ubuntu 20.04 so settling for manual shutdown on exit
 
+### list running machines
+```
+virsh list --all
+-->
+Id   Name          State
+------------------------------
+ -    ubuntu20.04   shut off
+ -    Win10pro      shut off
+```
+### starting machines
+```
+virsh start ubuntu20.04
+-->
+Domain ubuntu20.04 started
+<--
+virsh list --all
+-->
+ Id   Name          State
+------------------------------
+ 3    ubuntu20.04   running
+ -    Win10pro      shut off
+```
+
+### stopping machine (gracefully)
+```
+virsh start ubuntu20.04
+-->
+Domain ubuntu20.04 is being shutdown
+```
