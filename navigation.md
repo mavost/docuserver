@@ -7,3 +7,4 @@
 [Webservers](webservers.md)
 [Git](git.md)
 [About](about.md)
+[gimmick:theme](slate)

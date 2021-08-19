@@ -12,6 +12,17 @@
   - also an **about.md** and **index.md** for further info
   - added symbolic link **home.md** &rightarrow; **index.md**
   - **Readme.md** is a copy of **index.md**
+  - setting the theme 
+    - either manually by adding a specific theme to **navigation.md**
+    ```
+    [gimmick:theme](slate)
+    ```
+  or
+    - by adding a theme chooser option
+    ```
+    [gimmick:themechooser](Choose theme)
+    ```
+  - added a **config.json** file containing some basic settings
 5. results and edits are pushed to [Github](https://github.com/mavost/docuserver)
 6. given a webserver is installed and running the folder is copied to */var/www/landing_page*
 or checked out via  `git clone https://github.com/mavost/docuserver`
