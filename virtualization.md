@@ -89,7 +89,7 @@ Wired connection 1  56f32c14-a4d2-32c8-9391-f51967efa173  ethernet  --
 
 ---
 
-## Running VW-ware machine images on QEMU/KVM
+## Running VMware machine images on QEMU/KVM
 - in case of thin-provisioned images, firstly convert the image to a monolithic flatfile  
     [VMware - Virtual Disk Manager - Manual](https://www.vmware.com/pdf/VirtualDiskManager.pdf)
     > -t [0|1|2|3|4|5] Specifies the virtual disk type. This option is required when you create or convert a virtual disk. Choose one of the following types:  
