@@ -21,7 +21,8 @@ For virtualization use cases where server guests run in parallel to the Host we 
 
 ### show connections using NetworkManager CMD line tool
 for configuration of the ethernet interface  
-`nmcli con show` &rightarrow;
+`nmcli con show`  
+&rightarrow;
 ```bash
 NAME                UUID                                  TYPE      DEVICE
 Wired connection 1  56f32c14-a4d2-32c8-9391-f51967efa173  ethernet  eno1
@@ -30,7 +31,8 @@ virbr0              59bf4111-e0d2-4e6c-b8d4-cb70fa6d695e  bridge    virbr0
 
 ### show VM networks
 only the default NAT bridge available  
-`virsh net-list --all` &rightarrow;
+`virsh net-list --all`  
+&rightarrow;
 ```bash
  Name                 State      Autostart     Persistent
 ----------------------------------------------------------
@@ -49,8 +51,9 @@ only the default NAT bridge available
 `nmcli con down "Wired connection 1"`  
 `nmcli con up br0`
 
-### verify result 
-`nmcli con show` &rightarrow;
+### verify result
+`nmcli con show`  
+&rightarrow;
 ```bash
 NAME                UUID                                  TYPE      DEVICE 
 br0                 8416607e-c6c1-4abb-8583-1661689b95a9  bridge    br0    
@@ -61,7 +64,7 @@ Wired connection 1  56f32c14-a4d2-32c8-9391-f51967efa173  ethernet  --
 
 ### connect QEMU/KVM to with the new network bridge
 1. create `bridge.xml` file containing
-    ```xml
+    ```
     <network>
       <name>br0</name>
       <forward mode="bridge"/>
@@ -74,10 +77,11 @@ Wired connection 1  56f32c14-a4d2-32c8-9391-f51967efa173  ethernet  --
 `virsh net-start br0`  
 `virsh net-autostart br0`  
 4. verify result
-    `virsh net-list --all` &rightarrow;
+    `virsh net-list --all`  
+    &rightarrow;
     ```bash
     Name                 State      Autostart     Persistent
-    ----------------------------------------------------------
+    =========================================================
     br0                  active     yes           yes
     default              active     yes           yes
     ```
@@ -98,7 +102,7 @@ Wired connection 1  56f32c14-a4d2-32c8-9391-f51967efa173  ethernet  --
 
     Example on **Windows** command line:  
     `vmware-vdiskmanager -r sourceDisk.vmdk -t 2 targetDisk.vmdk`  
-    &rightarrow; creates flat data file and file descriptor which both need to be copied to Linux image storage, i.e. `/var/lib/libvirt/images` e.g. using a samba share  
+    &rightarrow; creates flat data file and file descriptor which both need to be copied to Linux image storage, e.g. to `/var/lib/libvirt/images` by using a samba share mount
 
 - convert monolithic vmdk image to qcow2 image
     ```bash
@@ -119,7 +123,8 @@ Wired connection 1  56f32c14-a4d2-32c8-9391-f51967efa173  ethernet  --
 &rightarrow; apparently slightly bugged on Ubuntu 20.04 so settling for manual shutdown on exit
 
 ### list running machines
-`virsh list --all` &rightarrow;
+`virsh list --all`  
+&rightarrow;
 ```bash
 Id   Name          State
 ------------------------------
@@ -127,8 +132,11 @@ Id   Name          State
  -    Win10pro      shut off
 ```
 ### starting machines
-`virsh start ubuntu20.04` &rightarrow; Domain ubuntu20.04 started  
-`virsh list --all` &rightarrow;
+`virsh start ubuntu20.04`  
+&rightarrow;  
+Domain ubuntu20.04 started  
+`virsh list --all`  
+&rightarrow;
 ```bash
 Id   Name          State
 ------------------------------
@@ -137,7 +145,8 @@ Id   Name          State
 ```
 
 ### stopping machine (gracefully)
-`virsh start ubuntu20.04` &rightarrow;
+`virsh start ubuntu20.04`  
+&rightarrow;
 ```bash
 Domain ubuntu20.04 is being shutdown
 ```
