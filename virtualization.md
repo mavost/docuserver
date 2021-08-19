@@ -1,14 +1,14 @@
 # QEMU/KVM
 [source](https://help.ubuntu.com/community/KVM/Installation)
 ## install QEMU/KVM on Host
-```properties
+```bash
 sudo apt install -y bridge-utils
 sudo apt install -y virtinst qemu-kvm libvirt-daemon-system libvirt-clients
 sudo apt install -y virt-manager
 ```
 ## add user to relevant groups
 1. 
-    ```properties
+    ```bash
     sudo usermod -aG kvm $USER
     sudo usermod -aG libvirt $USER
     ```
@@ -23,7 +23,7 @@ For virtualization use cases where server guests run in parallel to the Host we 
 for configuration of the ethernet interface  
 ```
 nmcli con show
--->
+&rightarrow;  
 NAME                UUID                                  TYPE      DEVICE
 Wired connection 1  56f32c14-a4d2-32c8-9391-f51967efa173  ethernet  eno1
 virbr0              59bf4111-e0d2-4e6c-b8d4-cb70fa6d695e  bridge    virbr0
@@ -33,7 +33,7 @@ virbr0              59bf4111-e0d2-4e6c-b8d4-cb70fa6d695e  bridge    virbr0
 only the default NAT bridge available  
 ```
 virsh net-list --all
--->
+&rightarrow;
  Name                 State      Autostart     Persistent
 ----------------------------------------------------------
  default              active     yes           yes
@@ -54,7 +54,7 @@ virsh net-list --all
 ### verify result 
 ```
 nmcli con show
--->
+&rightarrow;
 NAME                UUID                                  TYPE      DEVICE 
 br0                 8416607e-c6c1-4abb-8583-1661689b95a9  bridge    br0    
 bridge-slave-eno1   43383092-6434-448f-b735-0cbea39eb38f  ethernet  eno1   
@@ -79,7 +79,7 @@ Wired connection 1  56f32c14-a4d2-32c8-9391-f51967efa173  ethernet  --
 4. verify result
     ```
     virsh net-list --all
-    -->
+    &rightarrow;
     Name                 State      Autostart     Persistent
     ----------------------------------------------------------
     br0                  active     yes           yes
@@ -102,7 +102,7 @@ Wired connection 1  56f32c14-a4d2-32c8-9391-f51967efa173  ethernet  --
 
     Example on **Windows** command line:  
     `vmware-vdiskmanager -r sourceDisk.vmdk -t 2 targetDisk.vmdk`  
-    --> creates flat data file and file descriptor which both need to be copied to Linux image storage, i.e. `/var/lib/libvirt/images` e.g. using a samba share  
+    &rightarrow; creates flat data file and file descriptor which both need to be copied to Linux image storage, i.e. `/var/lib/libvirt/images` e.g. using a samba share  
 
 - convert monolithic vmdk image to qcow2 image
     ```
@@ -120,12 +120,12 @@ Wired connection 1  56f32c14-a4d2-32c8-9391-f51967efa173  ethernet  --
 ### edit virtual machine shutdown behavior
 [source](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/virtualization_deployment_and_administration_guide/sect-shutting_down_rebooting_and_force_shutdown_of_a_guest_virtual_machine-manipulating_the_libvirt_guests_configuration_settings)  
 `sudo nano /usr/lib/libvirt/libvirt-guests.sh`  
---> apparently slightly bugged on Ubuntu 20.04 so settling for manual shutdown on exit
+&rightarrow; apparently slightly bugged on Ubuntu 20.04 so settling for manual shutdown on exit
 
 ### list running machines
 ```
 virsh list --all
--->
+&rightarrow;
 Id   Name          State
 ------------------------------
  -    ubuntu20.04   shut off
@@ -134,11 +134,11 @@ Id   Name          State
 ### starting machines
 ```
 virsh start ubuntu20.04
--->
+&rightarrow;
 Domain ubuntu20.04 started
-<--
+&leftarrow;
 virsh list --all
--->
+&rightarrow;
  Id   Name          State
 ------------------------------
  3    ubuntu20.04   running
@@ -148,6 +148,6 @@ virsh list --all
 ### stopping machine (gracefully)
 ```
 virsh start ubuntu20.04
--->
+&rightarrow;
 Domain ubuntu20.04 is being shutdown
 ```

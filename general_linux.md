@@ -16,7 +16,7 @@ manual unmount
 `gio mount -u smb://SERVER/SHARE`
 location of samba share after mount:  
 `ll ll /run/user/1000/gvfs/smb-share\:server\=SERVER\,share\=SHARE/`  
---> not happy with the options and lack of backward-compatibility
+&rightarrow; not happy with the options and lack of backward-compatibility
 
 ### automount of samba share using scripting
 [old-school cifs-mount](https://baihuqian.github.io/2019-10-20-how-to-mount-wd-mycloud-on-ubuntu-18-04)  
@@ -33,7 +33,7 @@ enter the `gnome-session-properties` configuration tool and add a script
 - check status: `git config --list --show-origin`  
 - add user name: `git config --global user.name "yourusername"`  
 - add email: `git config --global user.email "email@youremail.com"`  
---> settings will be added to ~/.gitconfig file
+&rightarrow; settings will be added to ~/.gitconfig file
 
 ---
 
@@ -44,17 +44,17 @@ enter the `gnome-session-properties` configuration tool and add a script
 ### generating keys on client
 [source](https://www.ssh.com/academy/ssh/keygen#choosing-an-algorithm-and-key-size)  
 `ssh-keygen -f ~/.ssh/ssh-key-ecdsa -t ecdsa -b 521`  
---> supply secret key  
-<-- public and private key generated
+&rightarrow; supply secret key  
+&leftarrow; public and private key generated
 
 ### deploying public key on server
 `ssh-copy-id -i .ssh/ssh-key-ecdsa.pub USER@GUEST`  
-<-- enter password for host  
---> public key registered on host
+&leftarrow; enter password for host  
+&rightarrow; public key registered on host
 
 ### verifying key was deployed on server
 `ssh user@server`  
-<-- ubuntu asks for secret key - once
+&leftarrow; ubuntu asks for secret key - once
 
 ---
 
@@ -62,7 +62,7 @@ enter the `gnome-session-properties` configuration tool and add a script
 ### install mesa tools for stuff like glx-info, glx-gears 
 `sudo apt-get install mesa-utils`
 ### removing packages as completely as possible by example
-```properties
+```bash
 sudo apt-get remove --purge libreoffice*
 sudo apt-get clean
 sudo apt-get autoremove

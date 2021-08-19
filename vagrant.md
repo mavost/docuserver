@@ -14,7 +14,7 @@ sudo apt-get -y install vagrant
 `sudo apt install qemu libvirt-daemon-system libvirt-clients libxslt-dev libxml2-dev libvirt-dev zlib1g-dev ruby-dev ruby-libvirt ebtables dnsmasq-base`
 
 ### Fixing problems with compatibility between newest libvirt and Vagrant plugin requirements
---> (2021-08-15) use 6.0.0-0ubuntu8.3 (not younger)
+&rightarrow; (2021-08-15) use 6.0.0-0ubuntu8.3 (not younger)
 
 compatibility to dev-package
 1. `sudo apt list -a libvirt0`  
