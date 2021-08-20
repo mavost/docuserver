@@ -81,10 +81,11 @@ Task bar sits on the left border by default but can be moved to any edge in **Se
 
 ## enable battery charge limiter
 [source](https://www.linuxuprising.com/2021/02/how-to-limit-battery-charging-set.html)
+
 1. verify that `ls /sys/class/power_supply`  
-returns `AC0  BAT0`  
-and `ls /sys/class/power_supply/BAT*/charge_control_end_threshold`  
-returns an existing path - otherwise function does not exist
+    returns `AC0  BAT0`  
+    and `ls /sys/class/power_supply/BAT*/charge_control_end_threshold`  
+    returns an existing path - otherwise function does not exist
 
 2. generate new file: `sudo nano /etc/systemd/system/battery-charge-threshold.service`
     ```

@@ -18,12 +18,16 @@ Existing issues between libs and dev packages (2021-08-15):
 - zlib1g must be 1:1.2.11.dfsg-2ubuntu1 (not younger) to match zlib1g-dev
 
 After fixing compatibility issues install the whole shebang of virtualization packages and plugins to enable libvirt provider in vagrant
+
 1. `sudo apt list -a libvirt0`  
    `sudo apt list -a zlib1g`
+
 2. `sudo apt-get update`  
    `sudo apt-get install libvirt0=6.0.0-0ubuntu8.3`  
    `sudo apt-get install zlib1g=1:1.2.11.dfsg-2ubuntu1`
+
 3. `sudo apt install qemu libvirt-daemon-system libvirt-clients libxslt-dev libxml2-dev libvirt-dev zlib1g-dev ruby-dev ruby-libvirt ebtables dnsmasq-base`
+
 4. `vagrant plugin install vagrant-libvirt`  
    `vagrant plugin install vagrant-mutate` &rightarrow; conversion tool for generic Vagrant boxes to be run with libvirt
 
