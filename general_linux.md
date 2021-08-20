@@ -56,6 +56,9 @@ enter the `gnome-session-properties` configuration tool and add a script
 `ssh user@server`  
 &leftarrow; ubuntu asks for secret key - once
 
+### secure copy a folder to destination
+`scp -r $FOLDERNAME $SERVERUSER@$SERVERNAME:~`
+
 ---
 
 ## software bits and pieces

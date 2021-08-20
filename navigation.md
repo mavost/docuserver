@@ -2,6 +2,7 @@
 
 [Home](home.md)
 [Linux](general_linux.md)
+[Network](networking.md)
 [Vagrant](vagrant.md)
 [Virtualization](virtualization.md)
 [Webservers](webservers.md)
