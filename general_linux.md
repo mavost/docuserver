@@ -1,13 +1,16 @@
 ## this and that
 [Markdownguide](https://www.markdownguide.org/basic-syntax)
+
 ### get current kernel version
 `uname -r` resulting in e.g. `5.8.0-63-generic`
+
 ### edit grub bootloader to skip fs checks every boot
 - editing grub boot loader with `sudo nano /etc/default/grub` and changing: 
     ```
     GRUB_CMDLINE_LINUX_DEFAULT="fsck.mode=skip quiet splash"
     ```
 - and then running `sudo update-grub`
+
 ### automount of Ubuntu using a-priori file manager access
 [as explained in GIO-mount](https://wiki.ubuntuusers.de/gio_mount)  
 alternatively, manual anonymous mount
@@ -28,6 +31,7 @@ running a script once after Gnome starts up, e.g. for mounting SMB-Shares.
 enter the `gnome-session-properties` configuration tool and add a script
 
 ---
+
 ## Coding
 ### setting up Git
 - check status: `git config --list --show-origin`  
