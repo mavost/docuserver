@@ -13,13 +13,17 @@
 
 ### automount of Ubuntu using a-priori file manager access
 [as explained in GIO-mount](https://wiki.ubuntuusers.de/gio_mount)  
+
 - alternatively, manual anonymous mount  
-  `gio mount -a smb://SERVER/SHARE`  
+  `gio mount -a smb://SERVER/SHARE`
+
 - manual unmount  
-  `gio mount -u smb://SERVER/SHARE`  
+  `gio mount -u smb://SERVER/SHARE`
+
 - location of samba share after mount:  
-  `/run/user/1000/gvfs/smb-share\:server\=SERVER\,share\=SHARE/`  
-  &rightarrow; not happy with the options and lack of backward-compatibility
+  `/run/user/1000/gvfs/smb-share\:server\=SERVER\,share\=SHARE/`
+
+&rightarrow; not happy with the options and lack of backward-compatibility
 
 ### automount of samba share using scripting
 [old-school cifs-mount](https://baihuqian.github.io/2019-10-20-how-to-mount-wd-mycloud-on-ubuntu-18-04)  
