@@ -130,23 +130,24 @@ System hosts two graphics cards:
 - AMD/ATI Radeon RX Vega 10  
 
 HDMI port apparently hard-wired to Nvidia card (other option would be to use the USB-C port)
-1. check hardware specs: `lspci -k | grep -A 2 -i "VGA"`  
+
+1. check hardware specs: `lspci -k | grep -A 2 -i "VGA"`
 2. check more hardware specs: `xrandr`
-3. check more hardware specs: `sudo lshw -C display`  
+3. check more hardware specs: `sudo lshw -C display`
 4. open up the app **Software & Updates**. Click the **Additional Drivers** tab (see, screen shot). You can see which driver is used for Nvidia card (Nouveau by default) and a list of additional proprietary drivers. Select the most recent tested proprietary driver, e.g. "nvidia-driver-470" and **Apply Changes**.
 
-    > Ubuntu will install the drivers and the newest kernel (which had several issues of hardware features missing in my case). However selecting the old kernel in the **grub advanced boot loader** will still provide the driver modules. In my case the old/current/working kernel is `5.8.0-63-generic` and the updated/broken kernel was `5.11.0-25-generic`
+  > Ubuntu will install the drivers and the newest kernel (which had several issues of hardware features missing in my case). However selecting the old kernel in the **grub advanced boot loader** will still provide the driver modules. In my case the old/current/working kernel is `5.8.0-63-generic` and the updated/broken kernel was `5.11.0-25-generic`
 
 5. switching between card settings:
-    - select AMD card: `sudo prime-select intel`  
-    - select Nvidia card: `sudo prime-select nvidia`  
-    - display current setting: `prime-select query`
+  - select AMD card: `sudo prime-select intel`
+  - select Nvidia card: `sudo prime-select nvidia`
+  - display current setting: `prime-select query`
 
-    or using the **Nvidia App** and selecting the Prime Profile required  
+  or using the **Nvidia App** and selecting the Prime Profile required  
 
 6. remove new kernel that did not work properly:  
     `sudo apt remove linux-image-5.11.0-25-generic linux-image-unsigned-5.11.0-25-generic --verbose-versions`  
-    Note: the Nvidia modules under `/lib/modules/5.11.0-25-generic/kernel` are still required
+  Note: the Nvidia modules under `/lib/modules/5.11.0-25-generic/kernel` are still required
 
 Screenshots:
 
