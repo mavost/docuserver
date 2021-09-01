@@ -1,4 +1,4 @@
-# MvS Docuserver
+# mavost.ml Docuserver
 
 [Home](index.md)
 [Linux](general_linux.md)
