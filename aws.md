@@ -26,6 +26,7 @@ Sequence:
           ]
         }
         ```
+
     - initial upload of files, e.g. from your own repository (Add Files / Folders)
 
 2. setting up *Route 53* by adding a hosted zone
