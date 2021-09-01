@@ -137,7 +137,7 @@ HDMI port apparently hard-wired to Nvidia card (other option would be to use the
 
     > Ubuntu will install the drivers and the newest kernel (which had several issues of hardware features missing in my case). However selecting the old kernel in the **grub advanced boot loader** will still provide the driver modules. In my case the old/current/working kernel is `5.8.0-63-generic` and the updated/broken kernel was `5.11.0-25-generic`
 
-5.  switching between card settings:
+5. switching between card settings:
     - select AMD card: `sudo prime-select intel`  
     - select Nvidia card: `sudo prime-select nvidia`  
     - display current setting: `prime-select query`
