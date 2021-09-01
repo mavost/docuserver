@@ -35,9 +35,11 @@ Sequence:
     ![alt text][img01]
   - copy AWS Route 53 DNS server names for use in step 3
 
+
 3. add server names in Freenom Domain administration
   - screenshot  
     ![alt text][img02]
+
 
 4. setting up AWS CodePipeline (one pipeline covered by FreeTier)
   - screenshot  
