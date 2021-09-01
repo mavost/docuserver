@@ -1,4 +1,4 @@
-# Docuserver - Wiki
+# MavoSt - Docuserver Wiki Pages
 
 This is the markdown source of the MDwiki instance at [http://www.mavost.ml](http://www.mavost.ml/)
 

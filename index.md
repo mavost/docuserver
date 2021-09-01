@@ -1,4 +1,4 @@
-# Welcome to the www.mavost.ml Docuserver pages
+# Welcome to the MavoSt Docuserver Wiki pages
 It is a little webspace where I maintain my collected knowledge on Linux and cloud technologies.  
 Feel free to browse...  
 Live instance currently accessible as:  
