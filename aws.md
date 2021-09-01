@@ -31,19 +31,17 @@ Sequence:
     - initial upload of files, e.g. from your own repository (Add Files / Folders)
 
 2. setting up *Route 53* by adding a hosted zone
-  - screenshot  
-    ![alt text][img01]
-  - copy AWS Route 53 DNS server names for use in step 3
-
+    - screenshot  
+      ![alt text][img01]
+    - copy AWS Route 53 DNS server names for use in step 3
 
 3. add server names in Freenom Domain administration
-  - screenshot  
-    ![alt text][img02]
-
+    - screenshot  
+      ![alt text][img02]
 
 4. setting up AWS CodePipeline (one pipeline covered by FreeTier)
-  - screenshot  
-    ![alt text][img03]
+    - screenshot  
+      ![alt text][img03]
 
 [img01]:  ./Pictures/2021-09-01_AWS_Route53_HostedZoneS3.png "Setting up Route53 hosted zone for website S3 bucket"
 [img02]:  ./Pictures/2021-09-01_freenom_DNS.png "Entering AWS Route 53 DNS servers to Freenom Domain Settings"
