@@ -5,7 +5,7 @@
 ## Hosting a static website on AWS S3 buckets
 
 Sequence:  
-1. setting up *S3 bucket* with *bucketname*, permissions and inserting content  
+1. setting up *S3 bucket* with *bucketname*, permissions and inserting content
     - unblock **all public access** by unticking box and confirming decision  
     - add access policy with customized *bucketname*
         ```
@@ -26,7 +26,6 @@ Sequence:
           ]
         }
         ```
-
     - initial upload of files, e.g. from your own repository (Add Files / Folders)
 
 2. setting up *Route 53* by adding a hosted zone
