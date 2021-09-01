@@ -46,22 +46,3 @@ Sequence:
 [img01]:  ./Pictures/2021-09-01_AWS_Route53_HostedZoneS3.png "Setting up Route53 hosted zone for website S3 bucket"
 [img02]:  ./Pictures/2021-09-01_freenom_DNS.png "Entering AWS Route 53 DNS servers to Freenom Domain Settings"
 [img03]:  ./Pictures/2021-09-01_AWS_CodePipeline_GitHub-S3.png "Setup for AWS CodePipeline"
-
-```
-  {
-    "Version": "2012-10-17",
-    "Statement": [
-      {
-        "Sid": "PublicReadGetObject",
-        "Effect": "Allow",
-        "Principal": "*",
-        "Action": [
-          "s3:GetObject"
-        ],
-        "Resource": [
-          "arn:aws:s3:::bucketname/*"
-        ]
-      }
-    ]
-  }
-```
