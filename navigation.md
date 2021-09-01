@@ -1,6 +1,6 @@
 # MvS Docuserver
 
-[Home](home.md)
+[Home](Readme.md)
 [Linux](general_linux.md)
 [Network](networking.md)
 [Vagrant](vagrant.md)
