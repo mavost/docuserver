@@ -1,4 +1,4 @@
-# mavost.ml Docuserver
+# MavoSt - Docuserver Wiki Pages
 
 [Home](index.md)
 [Linux](general_linux.md)

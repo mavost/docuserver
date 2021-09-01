@@ -6,4 +6,4 @@ It is the master branch of an [MDwiki](http://github.com/Dynalon/mdwiki/) instan
 
 
 - - - -
-my instance started off copying MDwiki's *index.html* and reading their docs. 
+my instance started off copying/renaming MDwiki's *mdwiki.html* to *index.html* and reading their docs. 
