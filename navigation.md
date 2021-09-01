@@ -5,6 +5,7 @@
 [Network](networking.md)
 [Vagrant](vagrant.md)
 [Virtualization](virtualization.md)
+[AWS](aws.md)
 [Webservers](webservers.md)
 [Git](git.md)
 [About](about.md)
