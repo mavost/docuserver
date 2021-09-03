@@ -1,7 +1,37 @@
 # Working with Amazon Web Services (AWS)
 
 ## Adding AWS-CLI to Ubuntu (v. 20.04)
+### Installation
+- `curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-2.0.30.zip" -o "awscliv2.zip"`  
+  update above path by looking up [latest-version](https://github.com/aws/aws-cli/blob/v2/CHANGELOG.rst)
+- `unzip awscliv2.zip && sudo ./aws/install && rm -rf aws && rm awscliv2.zip`
+### Linking the CLI to your AWS account
+- check "programatic access" in IAM user detail
+- add new user
+- add permissions - policies(left) - "AdministratorAccess"
+- open User summary &rightarrow; "Security credentials" &downarrow; "Access keys" &rightarrow; "Create access key" download CSV or copy/paste key to a safe place
+  ```
+  Example:
+  AKIA3RN7------RVROB5
+  gzpYwF9M-------------GhsODuvpXaa1JtRuhVY
+  ```
 
+- add key to CLI  
+  ```
+  aws configure --profile awscliuser
+  &rightarrow; type in keys
+  &rightarrow; type in default region "eu-central-1"
+  &rightarrow; type in default output "json"
+  ```
+- credential files (config, credentials) are located in `$HOME\.aws`
+- testing access to an existing resource in your AWS account, e.g. by `aws s3 ls --profile awscliuser` replies
+  ```
+  2021-08-05 11:58:32 inventory-12345
+  2021-09-01 15:04:55 example.com
+  2021-09-01 18:47:09 www.example.com
+  ```
+
+- by exporting the parameter `export AWS_PROFILE=awscliuser` to .profile/.bashrc you can omit the "--profile awscliuser"
 ## Hosting a static website on AWS S3 buckets
 
 Sequence:
