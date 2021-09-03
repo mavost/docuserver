@@ -61,25 +61,22 @@ Sequence:
     - initial upload of files, e.g. from your own repository (Add Files / Folders)
     - added a second bucket called *www.bucketname* and repeated above first two steps but instead 
     of uploading the same hosted content again I added a redirect  
-      ![alt text][img01]
+    <img src="./Pictures/2021-09-01_AWS_S3_subdomain_redirect.png" alt="Adjusting redirect of one subdomain to another" width="728"/>
+
+
 
 2. setting up *Route 53* by adding a hosted zone
     - add new hosted zone (not included in AWS free tier!) for both bucket destinations  
       domain *bucketname* &rightarrow; s3-website.eu-central-1.amazonaws.com S3 bucket  
       subdomain *www.bucketname* &rightarrow; s3-website.eu-central-1.amazonaws.com S3 bucket
     - screenshot  
-      ![alt text][img02]
+      <img src="./Pictures/2021-09-01_AWS_Route53_HostedZoneS3.png" alt="Setting up Route53 hosted zone for website S3 bucket" width="728"/>
     - copy AWS Route 53 DNS server names for use in step 3
 
 3. add server names in Freenom Domain administration
     - screenshot  
-      ![alt text][img03]
+      <img src="./Pictures/2021-09-01_freenom_DNS.png" alt="Entering AWS Route 53 DNS servers to Freenom Domain Settings" height="410"/>
 
 4. setting up AWS CodePipeline (one pipeline covered by FreeTier)
     - screenshot  
-      ![alt text][img04]
-
-[img01]:  ./Pictures/2021-09-01_AWS_S3_subdomain_redirect.png "Adjusting redirect of one subdomain to another"
-[img02]:  ./Pictures/2021-09-01_AWS_Route53_HostedZoneS3.png "Setting up Route53 hosted zone for website S3 bucket"
-[img03]:  ./Pictures/2021-09-01_freenom_DNS.png "Entering AWS Route 53 DNS servers to Freenom Domain Settings"
-[img04]:  ./Pictures/2021-09-01_AWS_CodePipeline_GitHub-S3.png "Setup for AWS CodePipeline"
+      <img src="./Pictures/2021-09-01_AWS_CodePipeline_GitHub-S3.png" alt="Setup for AWS CodePipeline" width="728"/>

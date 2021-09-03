@@ -70,9 +70,15 @@ enter the `gnome-session-properties` configuration tool and add a script
 ---
 
 ## software bits and pieces
-### install mesa tools for stuff like glx-info, glx-gears 
+### Installing mesa tools for stuff like `glx-info`, `glx-gears`
 `sudo apt-get install mesa-utils`
-### removing packages as completely as possible by example
+
+### Installing Imagemagick for image manipulation
+`sudo apt-get install imagemagick`  
+and testing function `convert logo: logo.gif`  
+best practices for [web images](https://support.squarespace.com/hc/en-us/articles/206542517-Formatting-your-images-for-display-on-the-web) and [manual](https://legacy.imagemagick.org/Usage/resize/)
+
+### Removing packages as completely as possible by example
 ```bash
 sudo apt-get remove --purge libreoffice*
 sudo apt-get clean
@@ -149,14 +155,7 @@ HDMI port apparently hard-wired to Nvidia card (other option would be to use the
     `sudo apt remove linux-image-5.11.0-25-generic linux-image-unsigned-5.11.0-25-generic --verbose-versions`  
   Note: the Nvidia modules under `/lib/modules/5.11.0-25-generic/kernel` are still required
 
-Screenshots:
-
-![alt text][img01]
-
-![alt text][img02]
-
-![alt text][img03]
-
-[img01]:  ./Pictures/2021-08-10_configuration.png "Display configuration"
-[img02]:  ./Pictures/2021-08-10_settings.png "System settings"
-[img03]:  ./Pictures/2021-08-10_updates.png "Driver update settings"
+Screenshots:  
+<img src="./Pictures/2021-08-10_configuration.png" alt="Display configuration" width="520"/>  
+<img src="./Pictures/2021-08-10_settings.png" alt="System settings" width="520"/>  
+<img src="./Pictures/2021-08-10_updates.png" alt="Driver update settings" width="728"/>
