@@ -5,6 +5,7 @@
 - `curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-2.0.30.zip" -o "awscliv2.zip"`  
   update above path by looking up [latest-version](https://github.com/aws/aws-cli/blob/v2/CHANGELOG.rst)
 - `unzip awscliv2.zip && sudo ./aws/install && rm -rf aws && rm awscliv2.zip`
+
 ### Linking the CLI to your AWS account
 - check "programatic access" in IAM user detail
 - add new user
@@ -15,7 +16,6 @@
   AKIA3RN7------RVROB5
   gzpYwF9M-------------GhsODuvpXaa1JtRuhVY
   ```
-
 - add key to CLI  
   ```
   aws configure --profile awscliuser
@@ -30,8 +30,8 @@
   2021-09-01 15:04:55 example.com
   2021-09-01 18:47:09 www.example.com
   ```
-
 - by exporting the parameter `export AWS_PROFILE=awscliuser` to .profile/.bashrc you can omit the "--profile awscliuser"
+
 ## Hosting a static website on AWS S3 buckets
 
 Sequence:
