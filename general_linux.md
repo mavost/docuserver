@@ -69,6 +69,13 @@ enter the `gnome-session-properties` configuration tool and add a script
 
 ---
 
+## NodeJS newer versions
+```
+sudo apt -y install curl dirmngr apt-transport-https lsb-release ca-certificates
+curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+sudo apt -y install nodejs && node-v
+```
+
 ## software bits and pieces
 ### Installing mesa tools for stuff like `glx-info`, `glx-gears`
 `sudo apt-get install mesa-utils`
