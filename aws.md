@@ -35,6 +35,7 @@
 
 ### (optional) Installing AWS serverless application model (SAM) CLI
 [source](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install-linux.html)
+
 - `curl -sSLO "https://github.com/aws/aws-sam-cli/releases/download/v1.27.0/aws-sam-cli-linux-x86_64.zip"`  
   Note: had problems with the master version post(1.27) not deploying the bootstrap system
 - unzip content and install `unzip aws-sam-cli-linux-x86_64.zip -d sam-cli && sudo sam-cli/install`
