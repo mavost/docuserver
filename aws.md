@@ -2,9 +2,10 @@
 
 ## Adding AWS-CLI to Ubuntu (v. 20.04)
 ### Installation
-- `curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-2.0.30.zip" -o "awscliv2.zip"`  
+- `curl -sS "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-2.0.30.zip" -o "awscliv2.zip"`  
   update above path by looking up [latest-version](https://github.com/aws/aws-cli/blob/v2/CHANGELOG.rst)
-- `unzip awscliv2.zip && sudo ./aws/install && rm -rf aws && rm awscliv2.zip`
+- unzip content and install `unzip awscliv2.zip && sudo ./aws/install`
+- verfiy installation and cleanup `aws --version && rm -rf aws && rm awscliv2.zip`
 
 ### Linking the CLI to your AWS account
 - check "programatic access" in IAM user detail
@@ -32,6 +33,24 @@
   ```
 - by exporting the parameter `export AWS_PROFILE=awscliuser` to .profile/.bashrc you can omit the "--profile awscliuser"
 
+### (optional) Installing AWS serverless application model (SAM) CLI
+[source](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install-linux.html)
+- `curl -sSLO "https://github.com/aws/aws-sam-cli/releases/download/v1.27.0/aws-sam-cli-linux-x86_64.zip"`  
+  Note: had problems with the master version post(1.27) not deploying the bootstrap system
+- unzip content and install `unzip aws-sam-cli-linux-x86_64.zip -d sam-cli && sudo sam-cli/install`
+- verfiy installation and cleanup `/usr/local/bin/sam --version && rm -rf sam-cli && rm aws-sam-cli-linux-x86_64.zip`  
+  Note: `/usr/local/bin` should actually be included in `PATH` variable already
+
+#### Working with AWS SAM CLI
+1. `sam init`
+2. `sam build`
+3. `sam deploy --guided --debug`
+  <img src="./images/2021-09-04_AWS-SAM-deploy.png" alt="AWS SAM output" width="720"/>
+4. Testing serverless Lambda  
+  `curl https://----API-----.execute-api.eu-central-1.amazonaws.com/Prod/hello/ -w "\n"`  
+  with `----API-----` refering to the endpoint-URL generated in the previous step
+
+---
 ## Hosting a static website on AWS S3 buckets
 
 Sequence:
@@ -61,7 +80,7 @@ Sequence:
     - initial upload of files, e.g. from your own repository (Add Files / Folders)
     - added a second bucket called *www.bucketname* and repeated above first two steps but instead 
     of uploading the same hosted content again I added a redirect  
-    <img src="./Pictures/2021-09-01_AWS_S3_subdomain_redirect.png" alt="Adjusting redirect of one subdomain to another" width="728"/>
+    <img src="./images/2021-09-01_AWS_S3_subdomain_redirect.png" alt="Adjusting redirect of one subdomain to another" width="728"/>
 
 
 
@@ -70,13 +89,13 @@ Sequence:
       domain *bucketname* &rightarrow; s3-website.eu-central-1.amazonaws.com S3 bucket  
       subdomain *www.bucketname* &rightarrow; s3-website.eu-central-1.amazonaws.com S3 bucket
     - screenshot  
-      <img src="./Pictures/2021-09-01_AWS_Route53_HostedZoneS3.png" alt="Setting up Route53 hosted zone for website S3 bucket" width="728"/>
+      <img src="./images/2021-09-01_AWS_Route53_HostedZoneS3.png" alt="Setting up Route53 hosted zone for website S3 bucket" width="728"/>
     - copy AWS Route 53 DNS server names for use in step 3
 
 3. add server names in Freenom Domain administration
     - screenshot  
-      <img src="./Pictures/2021-09-01_freenom_DNS.png" alt="Entering AWS Route 53 DNS servers to Freenom Domain Settings" height="410"/>
+      <img src="./images/2021-09-01_freenom_DNS.png" alt="Entering AWS Route 53 DNS servers to Freenom Domain Settings" height="410"/>
 
 4. setting up AWS CodePipeline (one pipeline covered by FreeTier)
     - screenshot  
-      <img src="./Pictures/2021-09-01_AWS_CodePipeline_GitHub-S3.png" alt="Setup for AWS CodePipeline" width="728"/>
+      <img src="./images/2021-09-01_AWS_CodePipeline_GitHub-S3.png" alt="Setup for AWS CodePipeline" width="728"/>
