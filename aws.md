@@ -43,11 +43,11 @@
   Note: `/usr/local/bin` should actually be included in `PATH` variable already
 
 #### Working with AWS SAM CLI
-1. `sam init`
-2. `sam build`
-3. `sam deploy --guided --debug`
+1. `sam init` initializes a serverless application with an AWS SAM template in the [language of choice](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-cli-command-reference-sam-init.html)
+2. to build your serverless application, use the `sam build` [command](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-using-build.html)
+3. deploy your application using the `sam deploy --guided --debug` [command](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-deploying.html)
   <img src="./images/2021-09-04_AWS-SAM-deploy.png" alt="AWS SAM output" width="720"/>
-4. Testing serverless Lambda  
+4. Testing serverless Lambda funtion  
   `curl https://----API-----.execute-api.eu-central-1.amazonaws.com/Prod/hello/ -w "\n"`  
   with `----API-----` refering to the endpoint-URL generated in the previous step
 
