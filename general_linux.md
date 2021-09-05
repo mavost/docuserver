@@ -73,7 +73,7 @@ enter the `gnome-session-properties` configuration tool and add a script
 ```
 sudo apt -y install curl dirmngr apt-transport-https lsb-release ca-certificates
 curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
-sudo apt -y install nodejs && node-v
+sudo apt -y install nodejs && node -v
 ```
 
 ## software bits and pieces
@@ -163,6 +163,6 @@ HDMI port apparently hard-wired to Nvidia card (other option would be to use the
   Note: the Nvidia modules under `/lib/modules/5.11.0-25-generic/kernel` are still required
 
 Screenshots:  
-<img src="./Pictures/2021-08-10_configuration.png" alt="Display configuration" width="520"/>  
-<img src="./Pictures/2021-08-10_settings.png" alt="System settings" width="520"/>  
-<img src="./Pictures/2021-08-10_updates.png" alt="Driver update settings" width="728"/>
+<img src="./images/2021-08-10_configuration.png" alt="Display configuration" width="520"/>  
+<img src="./images/2021-08-10_settings.png" alt="System settings" width="520"/>  
+<img src="./images/2021-08-10_updates.png" alt="Driver update settings" width="728"/>
