@@ -108,3 +108,7 @@ Sequence:
 ### Advanced webhosting of the S3 content using Cloudfront, Route 53 and a Freenom domain
 
 - Fine-tuning: In the Cloudfront distribution, for the origin-URL, instead of using the S3 bucket endpoint, use the S3 static website url which is slightly differnt. Distributions then are all working with subdirectory "/" endpoints going directly to the *index.html* files within the subdirectory. 
+
+- Note: the Cloudfront cache does only update once a day so your hosted site will refresh much slower than what you expect  
+&rightarrow; use the s3 website endpoint to verify the result  
+&rightarrow; add versioning or flush the cache (*expect added costs*)
