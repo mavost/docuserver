@@ -12,8 +12,9 @@ and [code pipeline](https://james-turner.medium.com/connecting-github-to-aws-cod
 
 ---
 To my AWS playground &rightarrow; **under heavy construction**  
-- follow this [link](uploader/index.html) to the S3 uploader.
-- follow this [link](https://api.mavost.ml/greetings) to an API-endpoint.
+- follow this [link](uploader/index.html) to the S3 uploader
+
+- follow this [link](https://api.mavost.ml/greetings) to an REST API-endpoint
 
 ---
 ## Requirements for MDwiki
