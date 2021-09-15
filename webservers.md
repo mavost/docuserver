@@ -3,12 +3,15 @@
 [source](https://www.digitalocean.com/community/tutorials/how-to-install-linux-apache-mysql-php-lamp-stack-on-ubuntu-20-04-de)
 
 Given **L**inux is provided pre-install from an Ubuntu server 20.04 LTS image and running
+
 1. SSH to server guest OS `ssh user@server`
+
 2. install **A**pache
     ```
     sudo apt update  
     sudo apt install apache2
     ```
+
 3. install **M**ySQL  
     - `sudo apt install mysql-server`
     - `sudo mysql_secure_installation`  
