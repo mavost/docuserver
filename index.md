@@ -11,7 +11,7 @@ see [cloud-webhosting](https://rajesh-r6r.medium.com/hosting-a-free-website-on-a
 and [code pipeline](https://james-turner.medium.com/connecting-github-to-aws-codepipeline-ce19a4a2f213) examples to replicate this setup.
 
 ---
-## AWS playground - under heavy construction - 
+To my AWS playground - under heavy construction - 
 - follow this [link](uploader/index.html) to the S3 uploader.
 - follow this [link](https://api.mavost.ml/greetings) to an API-endpoint.
 
