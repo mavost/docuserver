@@ -102,3 +102,9 @@ Sequence:
 4. setting up AWS CodePipeline (one pipeline covered by FreeTier)
     - screenshot  
       <img src="./images/2021-09-01_AWS_CodePipeline_GitHub-S3.png" alt="Setup for AWS CodePipeline" width="728"/>
+
+---
+
+### Advanced webhosting of the S3 content using Cloudfront, Route 53 and a Freenom domain
+
+- Fine-tuning: In the Cloudfront distribution, for the origin-URL, instead of using the S3 bucket endpoint, use the S3 static website url which is slightly differnt. Distributions then are all working with subdirectory "/" endpoints going directly to the *index.html* files within the subdirectory. 
