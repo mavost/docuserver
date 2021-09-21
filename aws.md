@@ -109,6 +109,6 @@ Sequence:
 
 - Fine-tuning: In the Cloudfront distribution, for the origin-URL, instead of using the S3 bucket endpoint, use the S3 static website url which is slightly differnt. Distributions then are all working with subdirectory "/" endpoints going directly to the *index.html* files within the subdirectory. 
 
-- Note: the Cloudfront cache does only update once a day so your hosted site will refresh much slower than what you expect  
+- Note: the Cloudfront cache does only update once a day so your hosted site will refresh much slower than what you expect, [source](https://aws.amazon.com/premiumsupport/knowledge-center/cloudfront-serving-outdated-content-s3/)  
 &rightarrow; use the s3 website endpoint to verify the result  
 &rightarrow; add versioning or flush the cache (*expect added costs*)

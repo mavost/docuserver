@@ -1,18 +1,17 @@
-## this and that
-[Markdownguide](https://www.markdownguide.org/basic-syntax)
+# Linux, Ubuntu 20.04 LTS, and related tidbits
 
-### get current kernel version
+### Report current kernel version
 `uname -r` resulting in e.g. `5.8.0-63-generic`
 
-### edit grub bootloader to skip fs checks every boot
+### Edit the grub bootloader to skip fs checks every boot
 - editing grub boot loader with `sudo nano /etc/default/grub` and changing: 
     ```
     GRUB_CMDLINE_LINUX_DEFAULT="fsck.mode=skip quiet splash"
     ```
 - and then running `sudo update-grub`
 
-### automount of Ubuntu using a-priori file manager access
-[as explained in GIO-mount](https://wiki.ubuntuusers.de/gio_mount)  
+### Automount of NAS shares on Ubuntu 
+Option 1: using a-priori file manager access [as explained in GIO-mount.](https://wiki.ubuntuusers.de/gio_mount)  
 
 - alternatively, manual anonymous mount  
   `gio mount -a smb://SERVER/SHARE`
@@ -25,18 +24,42 @@
 
 &rightarrow; not happy with the options and lack of backward-compatibility
 
-### automount of samba share using scripting
+Option 2: running **old-school** scripts when required
 [old-school cifs-mount](https://baihuqian.github.io/2019-10-20-how-to-mount-wd-mycloud-on-ubuntu-18-04)  
-bla
+my script tests for the availability of the NAS server on the local network and aborts in case 
+of being on the road with my laptop (no VPN connection back home, so far)
 
-### running session scripts
+Option 3: using the cifs package which works *out-of-the-box* with authentication
+(source)[https://wiki.ubuntuusers.de/mount.cifs/]
+
+- install the package  
+  `sudo apt install -y cifs-utils`
+
+- create a credentials file in user home and create mount point  
+  `touch .smbcredentials && mkdir examplemountpoint`  
+  the file should contain the following login data adjusted to your requirements:
+  ```bash
+  username=smbexampleuser
+  password=smbexamplepassword
+  domain=WORKGROUP
+  ```
+
+- add an entry to `/etc/fstab`:
+  ```bash
+  #SMB mount for mycloud share
+  //exampleserver/exampleshare /home/exampleuser/examplemountpoint cifs rw,_netdev,noauto,user,credentials=/home/exampleuser/.smbcredentials  0  0
+  ```
+  which allows a user/owner of the mountpoint to mount and unmount the share read/write using:  
+  `mount ~/examplemountpoint` and `umount ~/examplemountpoint`
+
+### Running session scripts
 [source](https://unix.stackexchange.com/questions/172179/gnome-shell-running-shell-script-after-session-starts)  
 running a script once after Gnome starts up, e.g. for mounting SMB-Shares.  
 enter the `gnome-session-properties` configuration tool and add a script
 
 ---
 
-## Coding
+## Coding / Software development / Data Analysis Tools
 ### setting up Git
 - check status: `git config --list --show-origin`  
 - add user name: `git config --global user.name "yourusername"`  
@@ -46,61 +69,81 @@ enter the `gnome-session-properties` configuration tool and add a script
 ---
 
 ## Setting up SSH with keys
-### adding hosts
+This is fairly old knowledge from the time when did have to do these things manually.
+1. adding hosts  
 `sudo nano /etc/hosts`
 
-### generating keys on client
-[source](https://www.ssh.com/academy/ssh/keygen#choosing-an-algorithm-and-key-size)  
+2. generating keys on client [source](https://www.ssh.com/academy/ssh/keygen#choosing-an-algorithm-and-key-size)  
 `ssh-keygen -f ~/.ssh/ssh-key-ecdsa -t ecdsa -b 521`  
 &rightarrow; supply secret key  
 &leftarrow; public and private key generated
 
-### deploying public key on server
+3. deploying public key on server  
 `ssh-copy-id -i .ssh/ssh-key-ecdsa.pub USER@GUEST`  
 &leftarrow; enter password for host  
 &rightarrow; public key registered on host
 
-### verifying key was deployed on server
+4. verifying key was deployed on server  
 `ssh user@server`  
 &leftarrow; ubuntu asks for secret key - once
 
-### secure copy a folder to destination
+5. secure copy a folder to destination  
 `scp -r $FOLDERNAME $SERVERUSER@$SERVERNAME:~`
 
 ---
 
-## NodeJS newer versions
-```
+## Further software bits and pieces
+### Installing mesa tools for stuff like `glx-info`, `glx-gears`
+`sudo apt-get install mesa-utils`
+
+### NodeJS official version
+Ubuntu's NodeJS "out-of-the-box" is not recommended in some scenarios so this is the official repo to link to.
+```bash
 sudo apt -y install curl dirmngr apt-transport-https lsb-release ca-certificates
 curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
 sudo apt -y install nodejs && node -v
 ```
-
-## software bits and pieces
-### Installing mesa tools for stuff like `glx-info`, `glx-gears`
-`sudo apt-get install mesa-utils`
 
 ### Installing Imagemagick for image manipulation
 `sudo apt-get install imagemagick`  
 and testing function `convert logo: logo.gif`  
 best practices for [web images](https://support.squarespace.com/hc/en-us/articles/206542517-Formatting-your-images-for-display-on-the-web) and [manual](https://legacy.imagemagick.org/Usage/resize/)
 
-### Removing packages as completely as possible by example
+### Removing any packages as completely as possible by example
+This can save save significant amounts of storage, e.g. when packaging a docker image. 
+I can also help with a botched installation.
 ```bash
 sudo apt-get remove --purge libreoffice*
 sudo apt-get clean
 sudo apt-get autoremove
 ```
-### getting Gnome software store back on a clean Ubuntu Focal Fossa 20.04
-The standard software store has recently been changed to **Snap** which does not provide all the desired tools.  
+
+### Replacing SNAP software store with Gnome software store on a clean Ubuntu Focal Fossa 20.04
+The standard software store has recently been changed to **Snap** which does not provide 
+all the desired tools.  
 `sudo apt-get --purge --reinstall install gnome-software`
-### moving Gnome start button to opposite side of task bar
-Task bar sits on the left border by default but can be moved to any edge in **Settings**, however the start button needs to be flipped by command line:  
+
+### Putting the Gnome start button to opposite side of task bar
+Task bar sits on the left border by default but can be moved to any edge in **Settings**, 
+however the start button needs to be flipped via command line:  
 `gsettings set org.gnome.shell.extensions.dash-to-dock show-apps-at-top true`
+
+### Installing Flameshot screengrabber
+My experience (2021-09-19) was that the packages on the *Snap Store* did not work out of the box.
+I uninstalled those and added the standard packages.
+```bash
+markus@myubuntu:~$ sudo apt install flameshot
+```
+
+It will be necessary to manually configure the screengrab key <kbd>Print</kbd> going through 
+*GNOME Start* &rarrow; *Settings* &rarrow; *Keyboard Shortcuts* and replacing the default for 
+the key with the command `/usr/bin/flameshot gui`
+
+<img src="./images/2021-09-19_flameshot_keyboard_shortcut.png" alt="Flameshot keypboard shortcuts" width="728"/>
 
 ---
 
-## enable battery charge limiter
+## Setting up battery charge limit on Ubuntu
 [source](https://www.linuxuprising.com/2021/02/how-to-limit-battery-charging-set.html)
 
 1. verify that `ls /sys/class/power_supply`  
