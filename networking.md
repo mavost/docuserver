@@ -1,24 +1,26 @@
-# networking topics
+# Networking topics
 
-## listing network interfaces
-- **ubuntu**: 
-    - `ip addr` &rightarrow; generally
-    - `ip -4 a` &rightarrow; list the IP4 interfaces only
-    ```
-    $ ip -4 a  
-    1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
-    inet 127.0.0.1/8 scope host lo
-       valid_lft forever preferred_lft forever
-    4: br0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 1000
-    inet 192.168.178.119/24 brd 192.168.178.255 scope global dynamic noprefixroute br0
-       valid_lft 167578sec preferred_lft 167578sec
-    5: virbr0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state DOWN group default qlen 1000
-    inet 192.168.122.1/24 brd 192.168.122.255 scope global virbr0
-       valid_lft forever preferred_lft forever
-    ```
+### Listing network interfaces on Ubuntu
+- `ip addr` &rightarrow; generally
 
-### Troubleshooting a networking bridge
-[source](https://www.cyberciti.biz/faq/ubuntu-20-04-add-network-bridge-br0-with-nmcli-command/)
+- `ip -4 a` &rightarrow; list the IP4 interfaces only
+```bash
+markus@machine:~$ ip -4 a  
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+inet 127.0.0.1/8 scope host lo
+   valid_lft forever preferred_lft forever
+4: br0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 1000
+inet 192.168.178.119/24 brd 192.168.178.255 scope global dynamic noprefixroute br0
+   valid_lft 167578sec preferred_lft 167578sec
+5: virbr0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state DOWN group default qlen 1000
+inet 192.168.122.1/24 brd 192.168.122.255 scope global virbr0
+   valid_lft forever preferred_lft forever
+```
+
+---
+
+### Troubleshooting a network bridge connection
+[source](https://www.cyberciti.biz/faq/ubuntu-20-04-add-network-bridge-br0-with-nmcli-command/)  
 I have set up a bridge interface on my notebook such that my home router (Fitz box) will assign an 
 individual IP address to each virtual guest machine (KVM/QEMU) on system as common practice. 
 Recently the bridge was disabled - don't know the reason - maybe related to me using the wifi interface 
@@ -80,9 +82,10 @@ markus@machine:~$ sudo nmcli connection delete 'Wired connection 1'
 ```
 but I will keep it like this - for now...
 
+---
 
 ### Replacing the default gateway on a Vagrant guest
-[source](https://www.cyberciti.biz/faq/howto-debian-ubutnu-set-default-gateway-ipaddress/)  
+[source](https://www.cyberciti.biz/faq/howto-debian-ubutnu-set-default-gateway-ipaddress/), [issue](https://github.com/hashicorp/vagrant/issues/2389)  
 I've been running into a configuration issue with my libvirt bridge interface on the host machine not being used as 
 the default gateway. Vagrant assigned the route via the private network which it uses for ssh 
 and provisioning as the primary route. Manually swithching the default as below solves the job for now.
@@ -103,6 +106,7 @@ default via 192.168.121.1 dev eth0 proto dhcp src 192.168.121.10 metric 100
 192.168.178.0/24 dev eth1 proto kernel scope link src 192.168.178.130
 
 vagrant@myubuntu:~$ sudo ip route del default via 192.168.121.1
+
 vagrant@myubuntu:~$ ip route
 default via 192.168.178.1 dev eth1 
 192.168.121.0/24 dev eth0 proto kernel scope link src 192.168.121.10 

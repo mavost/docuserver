@@ -1,6 +1,6 @@
-# installing and using Vagrant and QEMU/KVM provider (libvirt)
+# Installing and using Vagrant and QEMU/KVM provider (libvirt)
 
-## getting Vagrant from original repo
+## Using Vagrant from official repository
 [setting up repository, ](https://superuser.com/questions/845987/how-do-i-upgrade-vagrant-to-the-latest-version-in-ubuntu/845989)  
 [installation](https://ostechnix.com/how-to-use-vagrant-with-libvirt-kvm-provider/)  
 ```
@@ -33,22 +33,31 @@ After fixing compatibility issues install the whole shebang of virtualization pa
 
 ---
 
-## using Vagrant
+## Using Vagrant
 running commands on shell in folder where IAC project (**Vagrantfile** etc.) resides or will reside
-### verify that Vagrant works
+
+### Verify that Vagrant works
 `vagrant --help`
-### initialize image from repository
+
+### Initialize image from repository
 [Repository of Vagrant Boxes](https://app.vagrantup.com/boxes/search?utf8=✓&sort=downloads)  
 `vagrant init generic/alpine310`
-### provision instance
+
+### Adding syntax completion to bash shell
+`vagrant autocomplete install --bash`
+
+### Provision instance
 `vagrant up --provider=libvirt`
-### access instance
+
+### Access instance
 `vagrant ssh`
-### stop instance
+
+### Stop instance
 `vagrant suspend`
-### restart instance
+
+### Restart instance
 `vagrant resume`
-### stopping and removing instance
+### Stopping and removing instance
 `vagrant destroy`
 
 

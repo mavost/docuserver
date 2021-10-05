@@ -24,13 +24,37 @@ Option 1: using a-priori file manager access [as explained in GIO-mount.](https:
 
 &rightarrow; not happy with the options and lack of backward-compatibility
 
-Option 2: running **old-school** scripts when required
-[old-school cifs-mount](https://baihuqian.github.io/2019-10-20-how-to-mount-wd-mycloud-on-ubuntu-18-04)  
-my script tests for the availability of the NAS server on the local network and aborts in case 
-of being on the road with my laptop (no VPN connection back home, so far)
+Option 2: running *old-school* mount scripts from my `~/bin` for connecting when required: 
+[source](https://baihuqian.github.io/2019-10-20-how-to-mount-wd-mycloud-on-ubuntu-18-04)  
+My script tests for the availability of the NAS server on the local network and aborts in case 
+of being on the road with my laptop (no VPN connection back home, so far).
+This can be further refined using variables and loops in case of many shares needing connecting.
+```bash
+#!/bin/bash
+if ping -c 1 exampleserver &> /dev/null
+then
+  if [ ! -d /run/user/1000/gvfs/smb-share\:server\=exampleserver\,share\=exampleshare ]
+  then
+    echo "... mounting SMB-share exampleshare on exampleserver"
+    gio mount -a smb://exampleserver/exampleshare
+  else
+    echo "... mount already exists - do nothing"
+  fi
+  if [ ! -d ~/exampleshare ]
+  then
+    echo "... linking SMB-share to ~/exampleshare"
+    ln -s /run/user/1000/gvfs/smb-share\:server\=exampleserver\,share\=exampleshare ~/exampleshare
+  else
+    echo "... link already exists - do nothing"
+  fi
+else
+  echo "... host exampleserver not found - do nothing"
+fi
+```
 
-Option 3: using the cifs package which works *out-of-the-box* with authentication
-(source)[https://wiki.ubuntuusers.de/mount.cifs/]
+Option 3: using the *CIFS*-package which lets me access shares protected by authentication,
+which I didn't get to work with the above methods.  
+[source](https://wiki.ubuntuusers.de/mount.cifs/)
 
 - install the package  
   `sudo apt install -y cifs-utils`
@@ -96,20 +120,43 @@ This is fairly old knowledge from the time when did have to do these things manu
 ### Installing mesa tools for stuff like `glx-info`, `glx-gears`
 `sudo apt-get install mesa-utils`
 
-### NodeJS official version
+---
+
+### Installing NodeJS from official repository
 Ubuntu's NodeJS "out-of-the-box" is not recommended in some scenarios so this is the official repo to link to.
 ```bash
 sudo apt -y install curl dirmngr apt-transport-https lsb-release ca-certificates
-curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
 sudo apt -y install nodejs && node -v
 ```
+
+Testing installation by getting a React app up and running:
+```bash
+npx create-react-app my-app
+cd my-app && npm start
+```
+
+The app should now be accessible via http://localhost:3000 or in case of server hosting
+via the network - then however, make sure that the firewall allows such traffic.
+```bash
+sudo ufw status
+```
+
+Opening a port:
+```bash
+sudo ufw allow 3000/tcp
+```
+
+---
 
 ### Installing Imagemagick for image manipulation
 `sudo apt-get install imagemagick`  
 and testing function `convert logo: logo.gif`  
 best practices for [web images](https://support.squarespace.com/hc/en-us/articles/206542517-Formatting-your-images-for-display-on-the-web) and [manual](https://legacy.imagemagick.org/Usage/resize/)
 
-### Removing any packages as completely as possible by example
+---
+
+### Removing void packages as completely as possible by example
 This can save save significant amounts of storage, e.g. when packaging a docker image. 
 I can also help with a botched installation.
 ```bash
@@ -118,15 +165,21 @@ sudo apt-get clean
 sudo apt-get autoremove
 ```
 
-### Replacing SNAP software store with Gnome software store on a clean Ubuntu Focal Fossa 20.04
+---
+
+### Replacing Snap software store with Gnome software store on a clean Ubuntu Focal Fossa 20.04
 The standard software store has recently been changed to **Snap** which does not provide 
 all the desired tools.  
 `sudo apt-get --purge --reinstall install gnome-software`
+
+---
 
 ### Putting the Gnome start button to opposite side of task bar
 Task bar sits on the left border by default but can be moved to any edge in **Settings**, 
 however the start button needs to be flipped via command line:  
 `gsettings set org.gnome.shell.extensions.dash-to-dock show-apps-at-top true`
+
+---
 
 ### Installing Flameshot screengrabber
 My experience (2021-09-19) was that the packages on the *Snap Store* did not work out of the box.
@@ -136,7 +189,7 @@ markus@myubuntu:~$ sudo apt install flameshot
 ```
 
 It will be necessary to manually configure the screengrab key <kbd>Print</kbd> going through 
-*GNOME Start* &rarrow; *Settings* &rarrow; *Keyboard Shortcuts* and replacing the default for 
+*GNOME Start* &rightarrow; *Settings* &rightarrow; *Keyboard Shortcuts* and replacing the default for 
 the key with the command `/usr/bin/flameshot gui`
 
 <img src="./images/2021-09-19_flameshot_keyboard_shortcut.png" alt="Flameshot keypboard shortcuts" width="728"/>
@@ -177,6 +230,7 @@ the key with the command `/usr/bin/flameshot gui`
     with `BATTERY_NAME = BAT0`
 
 ---
+
 ## enable multiple displays on ASUS TUF Gaming FX505DV-HN311T
 [source 1, ](https://www.linuxbabe.com/desktop-linux/switch-intel-nvidia-graphics-card-ubuntu)
 [source 2](https://www.reddit.com/r/Ubuntu/comments/laf04n/working_asus_tuf_a15_with_ubuntu_2004_rtx_2060)

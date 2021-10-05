@@ -17,13 +17,12 @@
   AKIA3RN7------RVROB5
   gzpYwF9M-------------GhsODuvpXaa1JtRuhVY
   ```
-- add key to CLI  
-  ```
-  aws configure --profile awscliuser
-  &rightarrow; type in keys
-  &rightarrow; type in default region "eu-central-1"
+- add a profile to the CLI by running `aws configure --profile awscliuser`  
+  &rightarrow; type in keys  
+  &rightarrow; type in default region "eu-central-1"  
   &rightarrow; type in default output "json"
-  ```
+
+
 - credential files (config, credentials) are located in `$HOME\.aws`
 - testing access to an existing resource in your AWS account, e.g. by `aws s3 ls --profile awscliuser` replies
   ```
@@ -31,7 +30,13 @@
   2021-09-01 15:04:55 example.com
   2021-09-01 18:47:09 www.example.com
   ```
-- by exporting the parameter `export AWS_PROFILE=awscliuser` to .profile/.bashrc you can omit the "--profile awscliuser"
+- by adding the parameter `export AWS_PROFILE=awscliuser` in either .profile or .bashrc you can omit the "--profile awscliuser" 
+identification when submitting commands interactively
+
+### Adding bash shell syntax completion
+Edit *.bashrc* file by adding the following line and executing the file:  
+`[ -x /usr/local/bin/aws_completer ] && complete -C '/usr/local/bin/aws_completer' aws`  
+which triggers given that the **aws_completer** command is present
 
 ### (optional) Installing AWS serverless application model (SAM) CLI
 [source](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install-linux.html)
@@ -45,7 +50,7 @@
 #### Working with AWS SAM CLI
 1. `sam init` initializes a serverless application with an AWS SAM template in the [language of choice](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-cli-command-reference-sam-init.html)
 2. to build your serverless application, use the `sam build` [command](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-using-build.html)
-3. deploy your application using the `sam deploy --guided --debug` [command](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-deploying.html)
+3. deploy your application using the `sam deploy --guided --debug` [command](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-deploying.html)  
   <img src="./images/2021-09-04_AWS-SAM-deploy.png" alt="AWS SAM output" width="720"/>
 4. Testing serverless Lambda function  
   `curl https://----API-----.execute-api.eu-central-1.amazonaws.com/Prod/hello/ -w "\n"`  
