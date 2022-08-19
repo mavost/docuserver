@@ -1,4 +1,5 @@
 # Welcome to the MavoSt Docuserver Wiki pages
+
 This is a little webspace where I maintain my collected knowledge on Linux and cloud technologies.  
 As information is coming in from different directions I try to add sources as much as possible.
 Feel free to browse...  
@@ -10,7 +11,7 @@ Live instance currently accessible as:
 
 - and changes to the code base in [GitHub](https://github.com/mavost/docuserver) are automatically deployed using [AWS Codepipeline](https://aws.amazon.com/codepipeline/?nc=bc&pg=pr)
 
-see [cloud-webhosting](https://rajesh-r6r.medium.com/hosting-a-free-website-on-aws-s3-with-freenom-domains-for-dummies-a363aac39b1e) 
+see [cloud-webhosting](https://rajesh-r6r.medium.com/hosting-a-free-website-on-aws-s3-with-freenom-domains-for-dummies-a363aac39b1e)
 and [code pipeline](https://james-turner.medium.com/connecting-github-to-aws-codepipeline-ce19a4a2f213) examples to replicate this setup.
 
 ---

@@ -1,9 +1,11 @@
 # Installing and using Vagrant and QEMU/KVM provider (libvirt)
 
 ## Using Vagrant from official repository
-[setting up repository, ](https://superuser.com/questions/845987/how-do-i-upgrade-vagrant-to-the-latest-version-in-ubuntu/845989)  
-[installation](https://ostechnix.com/how-to-use-vagrant-with-libvirt-kvm-provider/)  
-```
+
+[setting up repository,](https://superuser.com/questions/845987/how-do-i-upgrade-vagrant-to-the-latest-version-in-ubuntu/845989)  
+ [installation](https://ostechnix.com/how-to-use-vagrant-with-libvirt-kvm-provider/)  
+
+``` {bash}
 curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
 sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
 sudo apt-get update
@@ -13,8 +15,10 @@ sudo apt-get -y install vagrant
 ---
 
 ## Installation of libvirt plugins on Ubuntu (Focal 20.04)
+
 Existing issues between libs and dev packages (2021-08-15):
-- libvirt must be 6.0.0-0ubuntu8.3 (not younger) to match libvirt-dev 
+
+- libvirt must be 6.0.0-0ubuntu8.3 (not younger) to match libvirt-dev
 - zlib1g must be 1:1.2.11.dfsg-2ubuntu1 (not younger) to match zlib1g-dev
 
 After fixing compatibility issues install the whole shebang of virtualization packages and plugins to enable libvirt provider in vagrant
@@ -34,30 +38,38 @@ After fixing compatibility issues install the whole shebang of virtualization pa
 ---
 
 ## Using Vagrant
+
 running commands on shell in folder where IAC project (**Vagrantfile** etc.) resides or will reside
 
 ### Verify that Vagrant works
+
 `vagrant --help`
 
 ### Initialize image from repository
+
 [Repository of Vagrant Boxes](https://app.vagrantup.com/boxes/search?utf8=✓&sort=downloads)  
 `vagrant init generic/alpine310`
 
 ### Adding syntax completion to bash shell
+
 `vagrant autocomplete install --bash`
 
 ### Provision instance
+
 `vagrant up --provider=libvirt`
 
 ### Access instance
+
 `vagrant ssh`
 
 ### Stop instance
+
 `vagrant suspend`
 
 ### Restart instance
+
 `vagrant resume`
+
 ### Stopping and removing instance
+
 `vagrant destroy`
-
-
