@@ -1,6 +1,6 @@
 # Welcome to the MavoSt Docuserver Wiki pages
 
-This is a little webspace where I maintain my collected knowledge on Linux and cloud technologies.  
+This is a little web space where I maintain my collected knowledge on Linux and cloud technologies.  
 As information is coming in from different directions I try to add sources as much as possible.
 Feel free to browse...  
 Live instance currently accessible as:

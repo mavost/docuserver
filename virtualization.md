@@ -183,3 +183,47 @@ Id   Name          State
 ``` {bash}
 Domain ubuntu20.04 is being shutdown
 ```
+
+## Docker installation
+
+This workflow installs the required docker modules without requiring a full docker-desktop installation.
+
+- (optional) Clean up script:  
+  `for pkg in docker.io docker-doc docker-compose podman-docker containerd runc; do sudo apt-get remove $pkg; done`
+- Set up and register package sources:
+
+    ```bash
+    sudo apt-get install ca-certificates curl gnupg
+    sudo install -m 0755 -d /etc/apt/keyrings
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+    sudo chmod a+r /etc/apt/keyrings/docker.gpg
+    ```
+
+    and
+
+    ```bash
+    echo \
+    "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+    "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
+    sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+    ```
+
+- **Important**: keep in mind to update package index:  
+  `sudo apt-get update`
+- Installing required packages:  
+  `sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin`
+- Testing the installation:  
+  `sudo docker run hello-world`  
+  and  
+  `sudo docker compose --version`
+- Post-install adjustments such that a normal user can use docker commands (- with the known risks):
+
+    ```bash
+    # making sure that the group exists (which it already should)
+    sudo groupadd docker
+    # adding current user to docker group
+    sudo usermod -aG docker $USER
+    ```
+
+    **Important**: to finalize log out user and back in from Ubuntu; check using:  
+    `groups`

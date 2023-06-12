@@ -1,4 +1,4 @@
-# Webserver Tips and Tricks
+# Web server tips and tricks
 
 ## interactive installation of LAMP stack
 
@@ -109,5 +109,5 @@ SELECT * FROM example_database.todo_list;
 
    - added a **config.json** file containing some basic settings
 5. results and edits are pushed to [Github](https://github.com/mavost/docuserver)
-6. given a webserver is installed and running the folder is copied to */var/www/landing_page*
+6. given a web server is installed and running the folder is copied to */var/www/landing_page*
 or checked out via  `git clone https://github.com/mavost/docuserver`
