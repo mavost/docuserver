@@ -4,7 +4,7 @@
 # hints on how to renormalize
 # https://docs.github.com/en/get-started/getting-started-with-git/configuring-git-to-handle-line-endings#refreshing-a-repository-after-changing-line-endings
 
-# tamplate generated using https://www.richie-bendall.ml/gitattributes-generator/
+# template generated using https://www.richie-bendall.ml/gitattributes-generator/
 
 # Common settings that generally should always be used with your language specific settings
 
