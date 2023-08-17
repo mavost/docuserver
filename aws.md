@@ -266,9 +266,81 @@ AWS Migration Hub does not perform migrations as it is meant to provide a single
 
 You work for a mobile telecommunications company that is looking to partner with a popular electric car company. The partnership will allow people to design applications for their vehicles that will use a 5G network connectivity to store vehicle location information, temperature status, and other diagnostic data on the AWS Cloud; however, it will cache the information at an edge location provided by the cellular company first, so as to maximize efficiency. Which AWS service could you use to create this? AWS Wavelength embeds AWS compute and storage services within 5G networks and would be the best service to use in this scenario, i.e., ultra-low latency using 5G to AWS resources.
 
-#### Amazon Timestream
+#### AWS RDS
+
+Workhorse for OLTP and supports SQL Server, MySQL, MariaDB, PostgreSQL, Oracle on top of Aurora
+
+Multi-AZ: handles replication of primary DB to standby DBs for increased availability; mandatorily included in Aurora instances; an RDS will automatically failover to the secondary instance on primary failing. Can not be used for performance increase. Only one DNS entry.
+
+Read-Replica: Read-only copy of primary R/W DB for increased scalability; can be cross-AZ and also cross-region, not directly intended for disaster recovery. Both instances have their own DNS entry one can point to. You can use this configuration for disaster recovery with adjustments. Requires RDS option "Automatic Backups" enabled to work. up to five read replicas per instance.
+
+#### AWS Aurora
+
+RDBS developed by AWS which is compatible to MySQL and PostgreSQL and significantly faster than both. Scales in 10GB increments up to 128TB.
+Features:
+
+- Strong data replication: 2 * 3 AZ copies will be generated.
+- Self-healing capabilities as inconsistencies are actively sought and corrected
+- Read/write performance only impacted after losing 3/2 copies, i.e. replicas.
+- Replicas can be Aurora(15)/MySQL(5)/PostgreSQL(5) flavor
+- Automated backups enabled at default price
+- offers a serverless flavor for spiky/unpredictable loads
+
+#### Aurora Serverless
+
+Aurora Serverless automatically starts up, shuts down, and scales capacity up or down based on your application's needs, and you pay only for capacity consumed.
+
+#### AWS DynamoDB
+
+DynamoDB is a fully managed NoSQL database service that provides fast and predictable performance and scalability. Stored on SSD. Single-digit millisecond latency.
+
+Features:
+
+- automatic replication across three AZs
+- needs a gateway to be accessed from a VPC
+- defaults to eventually consistent reads (wait 1s) and optionally offers strongly consistent reads at higher latency but better reliability
+- offers caching service DynamoDB Accelerator (DAX) which can be put between Application and DynamoDB to even further speed things up
+- pay per request which is generally more expensive than provisioned capacity
+- offers encryption using KMS
+- integrates with CloudWatch/CloudTrail/DirectConnect(DX)/IAM policies and roles/VPC endpoints/VPN connections
+- offers *DynamoDB transactions* to force ACID compliance on a table (atomicity, consistency, isolation, durability) in a "all or nothing" way
+- offers *DynamoDB Backup* to save/restore data without performance impact in a particular Region
+- offers "Point-in-Time Recovery* to protect against accidental writes/deletes, i.e. rolling back the DB to a previous state (between 5min to last 35d)
+- offers *Streams* as a time-ordered sequence of item-level changes in a table for the last 24 hours
+- offers *Global tables*, i.e., multi-master/multi-Region replication, as part of the DynamoDB streams functionality (at latency <1s)
+
+#### Amazon DocumentDB
+
+Offers a service to run MongoDB workloads without having to worry about maintenance.
+
+Use case:
+On-Prem MongoDB server &rightarrow; AWS DB Migration Service &rightarrow; DocumentDB
+
+#### Amazon Keyspaces
+
+Offers a service to run Cassandra NoSQL DB without having to worry about maintenance and saving cost as it is serverless.
+
+#### Amazon Neptune
+
+Amazon's Graph DB service. Used for entity resolution, knowledge graphs, fraud detection.
+
+#### Amazon Quantum Ledger Database (QLDB) for Ledger DBs
+
+Blockchain, financial, logistics, supply-chain transactional ops.  Immutable, transparent, crypto,  blah, blah...
+
+#### Amazon Timestream for Time-Series Data
 
 This would be the best and most cost-effective solution for storing time-series data.
+
+Use cases:
+
+- IoT: agriculture
+- Analytics:
+- DevOps:
+
+#### AWS Redshift
+
+Workhorse for OLAP
 
 #### Autoscaling Group
 
@@ -277,6 +349,53 @@ Use a predictive scaling policy on the Auto Scaling Group to meet opening and cl
 Using data collected from your actual EC2 usage and further informed by billions of data points drawn from our own observations, we use well-trained Machine Learning models to predict your expected traffic (and EC2 usage) including daily and weekly patterns. The model needs at least one day’s of historical data to start making predictions; it is re-evaluated every 24 hours to create a forecast for the next 48 hours.
 
 What we can gather from the question is that the spikes at the beginning and end of day can potentially affect performance. Sure, we can use dynamic scaling, but remember, scaling up takes a little bit of time. We have the information to be proactive, use predictive scaling, and be ready for these spikes at opening and closing. If scale by schedule was an option here, it would be a GREAT option. On your AWS exam, you won't always be given the option of the most correct solution.
+
+#### VPC
+
+Cooking recipe:
+
+1. Manually creating a VPC results in the following objects being generated, automatically:
+
+    - Default Security Group
+    - Network Access Control List (NACL)
+    - Main Route Table  
+
+2. Adding representations of public/private subnets: CIDR Address ranges for VPC/subnets can go from 0.0.0.0/16 to 0.0.0.0/28 and IP address range for each subnet is reduced by 5 addresses reserved by AWS. Subnets can not span multiple AZs.
+3. Enabling auto-assignment of public IPs in public subnets
+4. Create internet gateway and attach it to the VPC - only one IG per VPC.
+5. **Best practice**: Create individual route table for public subnets. Create route from IG to the internet: `0.0.0.0/0`. Associate public subnets. (in this way any new subnets will only inherit settings from the main route table which are more restrictive usually)
+6. Deploy instances, a web server (public subnet) and a DB server (private subnet). :-)
+7. Add a SG for **public internet** inbound web traffic (HTTP/S, SSH) and associate it with the web server. Add another SG for inbound DB connectivity (ICMP/ping, HTTP(dbadmin), SSH and MYSQL) from all **public subnets** in the VPC.
+8. Ping/SSH into the other machine from the web server and note that the DB server is disconnected from the internet.
+
+##### NAT Gateway
+
+Used to enable instances to communicate with the internet. It is placed as an quasi-instance in a public subnet, effectively providing redundant internet access, there. No SGs involved. No need to patch.
+
+1. Create NAT gateway, assign elastic IP address.
+2. Edit main route table by adding any subnet IP ranges pointing to the NAT gateway.
+
+##### Network ACL (NACL)
+
+First line of defense against intruders in form of a firewall between route tables and subnets:
+
+- The default NACL coming with a VPC allows all traffic
+- Newly created NACLs block all traffic
+- Each subnet only can have association with on NACL
+- NACL can associate with many subnets
+- NACLs are stateless
+- NACLs have separate inbound/outbound rules
+- NACL firewall rules are executed in an ordered list from lowest to highest number
+
+For a new network ACL for internet-facing purposes:
+
+1. allow required inbound traffic rules
+2. allow required outbound traffic rules
+3. add ephemeral port ranges to outbound traffic rules, e.g. for NAT.
+
+##### VPC Endpoints
+
+continue here
 
 #### AWS Outposts rack
 
@@ -513,6 +632,12 @@ Performance Enhancement:
 - For downloads of objects one can used Byte-Range Fetches in a similar manner
 - Latency can be reduced by spreading the objects in a bucket over several folders/prefixes.
 
+#### AWS Instance Store Volumes
+
+Ephemeral (short-term) block storage which can host an AMI image tied to the overlying EC2 hardware. AMI is sourced from S3, not a snapshot.
+Data persists while the machine is not stopped/terminated or hardware does not fail.  
+Not recommended for production, no encryption.
+
 #### Elastic Block Store (EBS)
 
 - General Purpose SSD (gp2/3): for storage of any EC2 OSs - uses cases demanding high number of IOPS (reads/writes up to 16000IOPS) instead of throughput
@@ -569,6 +694,12 @@ FSx for Windows: A managed Windows Server running a SMB-based file service. Use 
 
 FSx for Lustre: serving data for high performance applications, GB/s throughput, millions of IOPS, sub-millisecond latencies, e.g. for Machine learning, AI, HPC, modelling; can store data on S3
 
+#### AWS Backup
+
+Flexible service to backup not only other services (EC2, EBS, EFS, both Amazon FSx, AWS Storage Gateway)
+but also whole AWS accounts, given they were set up using the AWS Organizations service.  
+Benefits: Centralization, automation option, compliance/audit friendly.
+
 #### AWS Pricing Calculator
 
 This would be the best way to anticipate what the AWS costs will be.
@@ -584,10 +715,6 @@ This provides cost protection against a DDoS attack.
 #### AWS Serverless Application Repository
 
 The AWS Serverless Application Repository allows users to quickly deploy premade, fully serverless applications to the AWS Cloud.
-
-#### Aurora Serverless
-
-Aurora Serverless automatically starts up, shuts down, and scales capacity up or down based on your application's needs, and you pay only for capacity consumed.
 
 #### Route 53
 
