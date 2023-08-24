@@ -262,10 +262,6 @@ Reference: [AWS DMS](https://aws.amazon.com/dms/)
 
 AWS Migration Hub does not perform migrations as it is meant to provide a single place to view and track existing and new migration efforts between other AWS services.
 
-#### AWS Wavelength
-
-You work for a mobile telecommunications company that is looking to partner with a popular electric car company. The partnership will allow people to design applications for their vehicles that will use a 5G network connectivity to store vehicle location information, temperature status, and other diagnostic data on the AWS Cloud; however, it will cache the information at an edge location provided by the cellular company first, so as to maximize efficiency. Which AWS service could you use to create this? AWS Wavelength embeds AWS compute and storage services within 5G networks and would be the best service to use in this scenario, i.e., ultra-low latency using 5G to AWS resources.
-
 #### AWS RDS
 
 Workhorse for OLTP and supports SQL Server, MySQL, MariaDB, PostgreSQL, Oracle on top of Aurora
@@ -391,11 +387,90 @@ For a new network ACL for internet-facing purposes:
 
 1. allow required inbound traffic rules
 2. allow required outbound traffic rules
-3. add ephemeral port ranges to outbound traffic rules, e.g. for NAT.
+3. add ephemeral port ranges to outbound traffic rules, e.g. for NAT. (ports 1024-65535)
 
 ##### VPC Endpoints
 
-continue here
+A VPC endpoint enables you to privately connect your VPC to supported AWS services and VPC endpoint services powered by PrivateLink without requiring an internet gateway, NAT device, VP
+connection, or AWS Direct Connect connection. Communication goes through AWS private backbone and does not go into the internet.
+
+Example would be an EC2 instance reading/writing to an S3 bucket, where you would want to safe bandwidth over using a NAT gateway.
+
+Interface Endpoints: elastic network interface with a private IP
+
+Gateway Endpoints: virtual device you provision (S3 / DynamoDB)
+
+##### VPC Peering
+
+Allows you to connect 1 VPC with another via a direct network route using private IP addresses. Instances behave as if they were on the same private network.
+
+You can peer VPCs with other AWS accounts as well as with other VPCs in the same account.
+
+Transitive peering is not supported, only direct communication between links possible, not via middlemen.
+
+Note: Can't have overlapping CIDR ranges.
+
+##### VPC Private Link
+
+The best way to expose a service VPC to tens, hundreds, or thousands of customer VPCs (!). Doesn't require VPC peering; no route tables, NAT gateways, internet gateways, etc. Requires a Network Load Balancer on the service VPC and an Elastic Network Interface (ENI) on the customer VPC.
+
+##### AWS Direct Link
+
+Using AWS Direct Connect, you can establish private connectivity between AWS and your data center or office.
+
+Dedicated Connection: AWS provisions a physical connection with a single customer.
+Hosted Connection: Partner provisions connection
+
+Basically, a fibre is run from customer's premise to the closest AWS Direct Connect Location and wired to a Dedicated/Hosted router which goes to the AWS backbone.
+
+##### Transit Gateway
+
+Reduces complexity in highly connected VPC networks as it allows you to have transitive peering between thousands of VPCs and
+on-premises data centers. Works on a hub—and—spoke model. Works on a regional basis, but you can have it across multiple regions.
+You can use it across multiple AWS accounts using RAM (Resource Access Manager).
+
+- You can use route tables to limit how VPCs talk to one another.
+- Works with Direct Connect as well as VPN connections.
+- Supports IP multicast (not supported by any other AWS service).
+
+##### AWS VPN CloudHub
+
+If you have multiple sites, each with its own VPN connection, you can use AWS VPN CloudHub to connect those sites together.
+
+- Hub-and-spoke model like the VPC peering connection.
+- Low cost and easy to manage.
+- It operates over the public internet, but all traffic between the customer gateway and the AWS VPN CloudHub is encrypted.
+
+Uses Virtual Private Gateways.
+
+##### AWS Wavelength
+
+AWS Wavelength embeds AWS compute and storage services within
+56 networks, providing mobile edge computing infrastructure for developing, deploying, and scaling ultra-low-latency applications.
+
+You work for a mobile telecommunications company that is looking to partner with a popular electric car company. The partnership will allow people to design applications for their vehicles that will use a 5G network connectivity to store vehicle location information, temperature status, and other diagnostic data on the AWS Cloud; however, it will cache the information at an edge location provided by the cellular company first, so as to maximize efficiency. Which AWS service could you use to create this? AWS Wavelength embeds AWS compute and storage services within 5G networks and would be the best service to use in this scenario, i.e., ultra-low latency using 5G to AWS resources.
+
+#### AWS Elastic Load Balancers
+
+Elastic Load Balancing automatically distributes incoming application traffic across multiple targets, such as Amazon
+EC2 instances. This can be done across multiple AZs.
+
+Three types are available:
+
+- Application LB: OSI Layer 7 - for general purpose http/https traffic, application aware, can use path-patters for routing decisions
+- Network LB: OSI Layer 4 - for high performance use (various ports)
+- Classic LB: OSI Layer 7 - legacy, http/https, sticky sessions, X-Forwarded
+- Gateway LB: OSI Layer 3 - security-related
+
+Features:
+
+- all LB can use health checks to verify whether a resource is available to be receiving traffic, otherwise it re-routes the traffic
+- Listeners listen on ports for particular comm. protocols connection requests
+- Rules set out a set of actions which the Listener can perform. One default rule exists for each listener
+- Target Groups bundle the resources (e.g., EC2 instances) and route traffic to a particular instance, serving as the target for a rule.
+- HTTPS: To use an HTTPS listener, you must deploy at least one SSL/TLS server certificate on
+your load balancer. The load balancer uses a server certificate to terminate the frontend
+connection and then decrypt requests from clients before sending them to the targets. Decryption happens on the LB!
 
 #### AWS Outposts rack
 
