@@ -179,8 +179,67 @@ Reference: [CloudTrail](https://aws.amazon.com/cloudtrail/faqs/)
 
 #### CloudWatch
 
+Monitoring service, observability platform, used to identify potential issues.
+
+Provides:
+
+- System-level metrics (Default), to give more detailed information on functionality out-sourced to AWS, e.g., RDS
+- Application-level metrics (Custom) - needs a CloudWatch agent on the machine to be monitored. Memory utilization on an EC2 instance is an example for a custom metric.
+- Alarms to notify you of a problem, there is no default alarm.
+
 Create a billing alarm in CloudWatch for the specified amount.
 This would be the most cost-effective and efficient way of alerting someone when their AWS bill reaches a certain threshold.
+
+##### CloudWatch Logs
+
+Monitoring service for logs (monitor, store, access/analyze):
+
+- On-Prem
+- CloudTrail
+- Lambda
+- EC2
+- RDS
+
+Log Event: timestamp/data  
+Log Stream: collection of events from the same source, e.g. one instance.  
+Log Group: Collection of streams relating to one piece of infrastructure, e.g. Apache web servers.
+
+After installing the Cloudwatch Agent to a machine one can select various log files to be monitored by pointing to the file paths on the machine, .e.g., `/var/log/http/access_log`, and start the agent with the config file.
+
+Notes:
+
+- EC2 instance needs permission to write to CW logs.
+- Mere storage (no processing) of logs can also be done in S3.
+- Real-time monitoring should be done with Kinesis.
+
+Analysis:
+
+1. Create filter patterns, i.e. regex patterns for errors
+
+2. Use CloudWatch Logs Insights: queries in an SQL-style manner
+
+3. Set up alarms
+
+#### Amazon Managed Service for Prometheus / Grafana
+
+**Grafana**: Fully managed AWS service allowing secure data visualizations for instantly querying, correlating, and visualizing your operational metrics, logs, and traces from different sources.
+
+*Workspaces* correspond to servers, on which users can create dashboards.
+
+Integrates with: CloudWatch, Prometheus, OpenSearch, Timestream
+
+Use cases: container monitoring, IoT data monitoring, troubleshooting
+
+**Prometheus**: Serverless, Prometheus-compatible service used for securely monitoring container metrics at scale.
+
+Both services can be coupled with VPC endpoints for secure VPC access.
+
+#### Amazon OpenSearch Service
+
+OpenSearch is an open source, distributed search and analytics suite derived from Elasticsearch.
+Amazon OpenSearch Service offers the latest versions of OpenSearch, support for 19 versions of Elasticsearch, as well as visualization capabilities powered by OpenSearch Dashboards and Kibana.
+
+---
 
 #### Amazon GuardDuty
 
@@ -208,23 +267,162 @@ Including bastion hosts in your VPC environment enables you to securely connect 
 #### DB Failover
 
 Failover is automatically handled by Amazon RDS so that you can resume database operations as quickly as possible without administrative intervention. When failing over, Amazon RDS simply flips the canonical name record (CNAME) for your DB instance to point at the standby, which is in turn promoted to become the new primary. We encourage you to follow best practices and implement database connection retry at the application layer.
-Failovers, as defined by the interval between the detection of the failure on the primary and the resumption of transactions on the standby, typically complete within one to two minutes. Failover time can also be affected by whether large uncommitted transactions must be recovered; the use of adequately large instance types is recommended with Multi-AZ for best results. AWS also recommends the use of Provisioned IOPS with Multi-AZ instances for fast, predictable, and consistent throughput performance.  
+Failover recovery, as defined by the interval between the detection of the failure on the primary and the resumption of transactions on the standby, typically completes within one to two minutes. Failover time can also be affected by whether large uncommitted transactions must be recovered; the use of adequately large instance types is recommended with Multi-AZ for best results. AWS also recommends the use of Provisioned IOPS with Multi-AZ instances for fast, predictable, and consistent throughput performance.  
 Reference: [AWS RDS](https://aws.amazon.com/rds/faqs/)
 
-#### Simple Workflow Queue
+#### Decoupling Architectures
 
-Does not guarantee FIFO and that no messages were lost or processed twice.
+Key takeaways:
 
-#### Amazon Kinesis Data Stream
-
-Performant message queue without data loss, duplication, FIFO
+- Always prefer loosely-coupled architectures over tightly-coupled architectures, i.e., prefer redundancy over reliance on single points of failure.
+- Tools to achieve loose coupling are:
+  - for each layer, put an ELB in charge of presiding over the distribution of traffic - not asynchronously, though.
+  - use SQS being a fully managed message queuing service that enables you to decouple and
+scale microservices, distributed systems, and serverless applications.
+  - use SNS being a fully managed messaging service for both application-to-application (A2A) and
+application-to-person (A2P) communication.
+  - use API Gateway being a fully managed service that makes it easy for developers to create, publish, maintain, monitor, and secure APIs at any scale.
 
 #### Simple Queue Service (SQS)
 
-Standard: Does not guarantee FIFO and that no messages were lost or processed twice.
-SQS-FIFO: FIFO (First-In-First-Out) queues are designed to enhance messaging between applications when the order of operations and events is critical or where duplicates can't be tolerated.
-SQS LIFO queue:
-SQS dead-letter queue: An SQS dead-letter queue is where other SQS queues (source queues) can send messages that can't be processed (consumed) successfully. It's great for debugging as it allows you to isolate issues so you can debug why their processing doesn't succeed.
+Simple Queue Service is a messaging queue that permits asynchronous processing of work, i.e.,
+one resource will send a message to an queue, and then at some convenient time another instance/service can poll that message from the queue for processing.
+
+Features:
+
+- Delivery delay can be set to range from 0 to 15 minutes.
+- Message size can go up to 256kB of text in any format.
+- Encryption in transit by default and optionally at rest, too.
+- SQS message retention ranges from 1 minute to 14 days; def. is 4 days.
+- Polling options for long and short polling available; def. is short but should be changed to long (because the former burns money), by adding a connection time window.
+- Queue depth when used as a metric in CloudWatch can tell you that you need more workers in your autoscaling group. Set alarms accordingly.
+- Visibility timeout: is a lock that is placed on a message in the queue after being picked up by a worker. If the worker fails to clear the lock and message after 30 seconds default the message reappears in the queue. Potentially leads to duplication if process time is long and needs tuning.
+- Can be coupled with SNS for storing undelivered notifications.
+
+Standard: Does not guarantee FIFO order and message duplication. Nearly unlimited transactions per second
+SQS-FIFO: FIFO (First-In-First-Out) queues are designed to enhance messaging between applications when the order of operations and events is critical or where duplicates can't be tolerated. 300 messages per second at extra cost.
+SQS dead-letter queue (DLQ): An SQS dead-letter queue is a standard queue where other SQS queues (source queues) can send messages that can't be processed (consumed) successfully - after a given number of retries. It's great for debugging as it allows you to isolate issues so you can debug why their processing doesn't succeed.
+
+#### Simple Notification Service (SNS)
+
+Push-based messaging sends messages on specific topics out to a list of subscribers, or fan out to multiple groups of subscribers.
+
+Possible subscribers:
+
+- Services: Kinesis Data Firehose, SQS, Lambda, HTTP, Application endpoint
+- Personal: SMS, email
+
+Features:
+
+- Analog to SQS it has a 256kB message size limit.
+- Encryption in transit by default and optionally at rest, too.
+- Option to use FIFO notifications with only SQS as subscriber.
+- Option to use SQS DLQ.
+- Resource policies can/must be attached to a topic to allow access to another service.
+- No retries apart from when using HTTP/HTTPS.
+
+#### API Gateway
+
+A fully managed service that can be used to create, maintain, monitor, secure and publish an API as the main means of access to your application.
+
+- Emphasis on security, WAF option
+- Prevent abuse via DDoS
+- Allows versioning of APIs
+- No need to mix credential management with application
+
+#### AWS Batch
+
+A service to assist in running batch workloads on EC2 or ECS/Fargate instances much alike to AWS Lambda services. Focus for using Batch over Lambda is placed on cases:
+
+- where optimal selection of compute resources and distribution of workloads is required
+- longer execution times than Lambda's 15 minute time limit is required
+- larger amount of storage space or shared computation is required (EFS)
+- the runtimes (OS) are needed to be customizable, were Lambda has a limited set to use
+
+Key Components:
+
+- **Job**: units of work in the shape of shell scripts, executables, container images.
+- **Job Definitions**: defining when and how to run the jobs with which resources.
+- **Jobs Queue**: tracking the progress of a job.
+- **Compute Environment**: as set of resources / workers which can be run either managed or unmanaged
+
+When choosing whether EC2 vs. Fargate services should pose as the worker, keep in mind:
+
+- Using Fargate should generally provide the best cost benefit ratio
+- EC2 instances are more appropriate
+  - for jobs running on highly customized AMIs, or using OS configurations (LinuxParameters)
+  - for jobs which need to be run on more than 4 vCPUs or 30 GiB RAM
+  - for GPU-heavy, i.e., ML learning or ARM Graviton tasks
+  - for running a high number of jobs and quick turnaround
+
+#### Amazon MQ
+
+Managed service to permit migration of applications using message queue systems to AWS, e.g. running on RabbitMQ or Active MQ engines.
+
+In contrast, SNS with SQS would be the go-to solution when building things from scratch.
+
+Amazon MQ requires private networking and has no default AWS integrations.
+It can work with Java JMS and handle protocols like AMQP 0-9-1, AMQP 1.0, MQTT,
+OpenWire, and STOMP.
+
+#### Simple Workflow Service (SWF)
+
+Amazon Simple Workflow Service (SWF) is a workflow management service that helps in building applications that can handle work through distributed components. Using SWF, you can define a number of tasks that can be executed in a predefined sequence.
+
+Use Cases:
+
+- Customer order processing workflow
+- Business process workflow
+- Analytics pipelines
+
+It does not guarantee FIFO and that no messages were lost or processed twice.
+
+#### Amazon Kinesis Data Streams / Firehose
+
+Performant real time (Data Streams) or near real time (Firehose) message queue without data loss, duplication, FIFO which is more complex to set up compared to SQS.
+
+#### AWS Step Functions
+
+It's a serverless orchestration service which cab tie together other AWS services using a graphical console to design and monitor workflows. It is perfectly integrated with the AWS service
+landscape, geared towards serverless architecture. All state machines are written in the *Amazon States Language* format.
+
+Principal components are:
+
+- **State machines**: a workflow with event-driven steps.
+- **Tasks**: these are specific states which represent a single unit of work and can serve as a step in a workflow.
+- **States** to be used in step function are:
+  - Pass: Passes any input directly to its output — no work done
+  - Task: Single unit of work performed (e.g., Lambda, Batch, and SNS)
+  - Choice: Adds branching logic to state machines
+  - Wait: Creates a specified time delay within the state machine (this is a popular exam topic)
+  - Succeed: Stops executions successfully
+  - Fail: Stops executions and marks them as failures
+  - Parallel: Runs parallel branches of executions within state machines
+  - Map: Runs a set of steps based on elements of an input array
+
+Workflow can run either in *standard* or *express* mode.
+
+1. **Standard**: these workflows have exactly-once execution, can run up to one year each, and can run with a rate of up to 2000 executions per second. Pricing is based on steps executed.
+2. **Express**: these workflows have an at-least-once execution, can run up to five minutes, and are specialized to run at a high event-rate, e.g., IoT data streaming. Pricing is based on execution, duration and memory consumed.
+
+#### Amazon AppFlow to ingest data from SaaS applications
+
+Integration service to pull data from third-party applications to AWS, e.g., S3.
+The service can be bi-directional, depending on the use case.
+
+Other examples:
+
+- Copy Salesforce contacts to a Amazon Redshift table
+- Ingesting and analyzing Slack conversations in S3
+- Pull support tickets from Zendesk to Snowflake
+- Transfer aggregate data an a schedule to S3 (up to 100GB)
+
+Principal components are:
+
+- **Flow**: data transfer between source and destination.
+- **Data Mapping**: describes how source data is placed in the destination.
+- **Filters**: specifies which data qualifies for a transfer.
+- **Trigger**: states how/when a flow is started, i.e., on-demand, on-event, scheduled
 
 #### AWS Storage Gateway - File Gateway
 
@@ -334,17 +532,244 @@ Use cases:
 - Analytics:
 - DevOps:
 
+---
+
+### Big Data
+
 #### AWS Redshift
 
-Workhorse for OLAP
+Workhorse for OLAP addressing the three V's of Big Data applications (volume, variety, velocity) orders of magnitude &rightarrow; TiBs, up to 16 PiB.
 
-#### Autoscaling Group
+- Similar to spinning up RDS instances.
+- Features a built-in SQL querying GUI in the management console.
+- It does not replace a OLTP system like RDS.
+- Note: not highly available unless copies are provisioned
+
+#### Elastic MapReduce (EMR)
+
+EMR is a managed big data platform used for running ETL jobs that allows you to process vast amounts of data using *open—source* tools, such as Hadoop, Spark, Hive, HBase, Flink, Hudi, and Presto.
+
+EMR will usually run on EC2 instances but can be deployed on EKS or Outpost clusters. It will access the machines running in a standard VPC via an Internet Gateway and store any results in S3 buckets.
+
+The machines forming the cluster will be getting provisioned including all the necessary tools and will be sitting running (idle) in the EC2 management console. EMR will make available the GUI's which are associated with the chosen open-source technology for building one's ETL-jobs.
+
+One can use reserved or spot instances to optimize cost.
+
+#### Kinesis
+
+Consists of several services used for real-time streaming, see below. Difference to SQS.
+
+##### Kinesis Data Streams
+
+Latency-optimized with unlimited destinations
+
+- Purpose is real-time data streaming in data ingest
+- Speed is real time
+- Difficulty is considerably high as user is responsible for setting up and
+scaling the system (creating producers and consumers, see Kafka).
+
+##### Kinesis Data Firehose
+
+Throughput-optimized with limited destinations (Elasticsearch, S3, Redshift, ...)
+
+- Purpose is data transfer to get information to S3, Redshift, Elasticsearch, or Splunk
+- Speed is near real time (within 60 seconds)
+- Difficulty is "Plug and play" with AWS architecture
+
+##### Kinesis Data Analytics and SQL
+
+Can be paired with the above two services to create SQL-based analytics and processing while it is being streamed.
+
+Serverless, so it takes care of provisioning and scaling. Cost is Pay-as-you-go.
+
+#### Amazon Athena and Glue
+
+**Athena** is an interactive query service that makes it easy to analyze data in S3 using SQL. This allows you to directly query data in your buckets without loading it into a database. This data can also be JSON logs.
+
+**Glue** is a serverless data integration service that makes it easy to discover, prepare, and combine data. It allows you to perform ETL workloads without managing underlying servers. Effectively it can replace EMR.
+
+The connection between both services is achieved using AWS Glue crawlers and data catalogs which scan the S3 buckets for data structures (schema) and indices.
+
+From there one can either use Athena as indicated before, or Amazon Redshift Spectrum for analysis and potentially Amazon Quicksight for visualization.
+
+#### Amazon Quicksight
+
+Is Amazon's interpretation of BI data visualization, e.g. a Tableau, Power BI, Looker clone
+
+#### AWS Data Pipeline
+
+AWS Data Pipeline is a managed Extract, Transform, Load (ETL) orchestration service for automating movement and transformation of one's data. It runs on EC2 instances, (not serverless, not real time). *Task runners* poll for open tasks and run them, when available. *Data nodes* specify the source, destination and data types that should be generated.
+
+Is highly available, fault-tolerant, and features automatic retries. It integrates with many popular AWS services, DynamoDB, RDS, Redshift, S3, and permits notifications via SNS.
+
+Use cases:
+
+- Processing data in EMR using Hadoop streaming
+- Importing or exporting DynamoDB data
+- Copying CSV files or data between S3 buckets
+- Exporting RDS data to S3
+- Copying data to Redshift
+
+This will be deprecated in the near [future](https://docs.aws.amazon.com/datapipeline/latest/DeveloperGuide/migration.html). Migration to one of the following services is encouraged:
+
+- AWS Glue
+- AWS Step Functions
+- Amazon Managed Workflows for Apache Airflow (MWAA)
+
+|Data Pipeline|Glue|Step Functions|Amazon MWAA|
+|:---:|:---:|:---:|:---:|
+|Pipelines|Workflows|Workflows|Direct acyclic graphs (DAGs)|
+|Pipeline definition JSON|Workflow definition or Python-based blueprints|Amazon State Language JSON|Python-based|
+|Activities|Jobs|States and Tasks|Tasks (Operators and Sensors)|
+|Instances|Job runs|Executions|DAG runs|
+|Attempts|Retry attempts|Catchers and retriers|Retries|
+|Pipeline schedule|Schedule triggers|EventBridge Scheduler tasks|Cron, timetables, data-aware|
+|Pipeline expressions and functions|Blueprint library|Step Functions intrinsic functions and AWS Lambda|Extensible Python framework|
+
+#### AWS Managed Streaming for Apache Kafka (MSK)
+
+Fully managed service for running data streaming applications that leverage Apache Kafka.
+Split between control and data plane so that specialists can focus on either side.
+Compatibility with open-source Apache Kafka to easily interface with existing applications and tools from the Kafka solar system.
+
+MSK features:
+
+- a serverless option,
+- *MSK Connect* for interconnectivity between architecture components,
+- encryption at rest and transit by default (integration with KMS),
+- broker logs which can be sent to CloudWatch, S3, Kinesis Data Firehose,
+- out of the box metrics for CloudWatch,
+- API calls are trackable via AWS CloudTrail.
+
+#### AWS OpenSearch / formerly Elasticsearch Service
+
+OpenSearch is a managed service allowing you to run search and analytics engines for various use cases, but main focus is logs. Any use case involving logging and visualization of log file analytics or BI reports is a good candidate to be solved using OpenSearch.
+
+---
+
+### Serverless Compute
+
+#### AWS Lambda
+
+AWS Lambda is a serverless compute service that lets you run code without provisioning or managing the underlying
+servers. It's like you're running code without computers.
+
+1. Pick a supported runtime or create your own.
+2. Clear the way for lambda to access other services by assigning roles (start with an API call or access to S3 storage).
+3. Networking is optional, but one can attach the function to a VPC and SGs.
+4. Define the compute resources required to make your computation.
+5. Define a trigger to make lambda perform a calculation.
+
+One use case is utilizing the CloudWatch Events / EventBridge to scan for untagged and running EC2 instances (Forcing the user to state the department that has to be billed for launching an instance) and shutting them down, automatically.
+
+Features and Limitations:
+
+- between 128MB and 10240MB RAM,
+- maximum computation duration / timeout is 15min,
+
+#### AWS Serverless Application Repository
+
+Define whole applications with AWS SAM templates and either publish or deploy them.
+Publishing apps can be either private or public where the latter makes them
+available for others to find and deploy. Note: that AWS does not watch for potential security issues created from deploying third party publications.
+This is a service that is heavily integrated with Lambda.
+
+#### Containerization using ECS and EKS
+
+Containers are generally considered more flexible, re-usable, portable than deploying an instance. They can provide one-off calculations or serve long-running applications.
+
+##### ECS: Elastic container service
+
+Proprietary service to manage containers and their surroundings:
+
+- One can choose between dedicated EC2 instances (can be reserved or spot instances) or serverless (Fargate) deployment to run containers.
+- ELB integration means that containers are registered for routing as the come online.
+- Security: containers can have roles assigned to them.
+- Proprietary means less flexible, hence, not working outside of AWS.
+
+##### EKS: Elastic Kubernetes Service
+
+Open-source service with can work cross cloud platform and on premise data center at the cost of reduced compatibility with AWS.
+
+##### Fargate
+
+
+
+#### Scaling compute power
+
+**Vertically**: means more CPU power/RAM/storage provisioned for an instance.
+
+**Horizontally**: means more instances brought online.
+
+Clear description of the three W's (What (LT), Where (AS), When(CW)) will set out the scaling strategy.
+
+#### Launch Templates / Launch Configurations
+
+The cooking recipe for consistently spinning up EC2 instances.
+
+**Launch Template**: defined by instance family/size, AMI, user configuration for boot strapping, security groups, IAM, and potentially networking information. *Note:* specifying a VPC/subnet will prevent a LT to be used for autoscaling. Can be versioned.
+
+**Launch Configuration**: deprecated, immutable predecessor of LTs, which only works for autoscaling. Should never be chosen over a launch template.
+
+#### Autoscaling Groups
+
+An Auto Scaling group contains a collection of EC2 instances that are treated as a collective group for purposes of scaling and management. This scaling is only applicable to the EC2 service.
+
+An autoscaling template ties together the launch template/configuration, networking & instance pricing scheme, interaction with load balancers (targeting, health checks), scaling policies and notifications (SNS).
+
+Scaling capacity:
+
+- Minimum capacity: floor, i.e., recommended setting is 2 for providing high availability but 0 is possible, which would terminate running instances.
+- Maximum capacity: ceiling, i.e., your budget is the limit, so careful with setting too much.
+- Desired capacity: right now required and set within the two bounds above.
+
+Scaling policies:
+
+- Reactive Scaling: based on observables on actual load changes you react by scaling in or out
+- Scheduled Scaling: for predictive workloads
+- Predictive scaling: ML-based blend of Reactive and Scheduled Scaling based on historic data.
+- Steady-State Scaling: only one copy should be online at once &rightarrow; all three capacity settings equal to one.
+
+Best practices:
+
+- A grace period against wild scaling behavior can be set up by selecting proper warm-up / cool down thresholds. Launching instances can take minutes, terminating them is usually much quicker.
+- Scale out aggressively.
+- Scale in conservatively.
+- Consider provisioning duration.
+- For cost saving measures use a baseline of reserved instances and potentially spot market instances for the handling of load spikes.
+- Use Cloudwatch metrics to get the best idea of your system load.
+- Prefer predictive over reactive.
+- "Bake" (highly customize and pre-install) AMI's for shorter provisioning time.
+- Spread autoscaling over multiple AZs.
+- Utilize ELBs' health checks to have instances terminated and re-provisioned on entering poor health states.
+
+---
 
 Use a predictive scaling policy on the Auto Scaling Group to meet opening and closing spikes.
 
 Using data collected from your actual EC2 usage and further informed by billions of data points drawn from our own observations, we use well-trained Machine Learning models to predict your expected traffic (and EC2 usage) including daily and weekly patterns. The model needs at least one day’s of historical data to start making predictions; it is re-evaluated every 24 hours to create a forecast for the next 48 hours.
 
 What we can gather from the question is that the spikes at the beginning and end of day can potentially affect performance. Sure, we can use dynamic scaling, but remember, scaling up takes a little bit of time. We have the information to be proactive, use predictive scaling, and be ready for these spikes at opening and closing. If scale by schedule was an option here, it would be a GREAT option. On your AWS exam, you won't always be given the option of the most correct solution.
+
+#### Scaling Databases
+
+##### Scaling RDS / Relational DBs
+
+1. Scale vertically by using more powerful machines
+2. Scale by adding storage - it can only be increased, not decreased.
+3. Scale by adding Read-replicas, in-region or cross-region (read replicas get separate endpoints)
+4. Consider a Aurora Serverless where scaling is outsourced to AWS
+5. Consider refactoring the DB and move to NoSQL/Dynamo DB (!)
+
+##### Scaling Non-Relational DBs
+
+Dynamo DB does not have many scaling options:
+
+- General mode is "provisioned fixed read/write IOPS" assuming a fairly predictable workload / target utilization.
+- For more sporadic workloads one can shift to a "on-demand" model which scales also at
+peak demand times but cost will be billed by request instead of using flat cost tiers.
+- You can switch between both modes every 24h.
+- Consider designing a very balanced partition key to spread your data evenly.
 
 #### VPC
 
@@ -457,20 +882,23 @@ EC2 instances. This can be done across multiple AZs.
 
 Three types are available:
 
-- Application LB: OSI Layer 7 - for general purpose http/https traffic, application aware, can use path-patters for routing decisions
-- Network LB: OSI Layer 4 - for high performance use (various ports)
-- Classic LB: OSI Layer 7 - legacy, http/https, sticky sessions, X-Forwarded
-- Gateway LB: OSI Layer 3 - security-related
+- Application LB: OSI Layer 7 - for general purpose http/https traffic, application aware, can use path-patters for routing decisions - content of the request can be used to route very intelligently; sticky sessions on TG level.
+- Network LB: OSI Layer 4 - for high performance use (TCP/UDP, TLS, all possible ports), no intelligence.
+- Classic LB: OSI Layer 7 - legacy; http/https; sticky sessions on instance level(:= routing a client user to the same application target consistently - needs to be disabled in case of server alterations); X-Forwarded-For (tracks origin of client via keeping IP in this header; aws infrastructure would only see LB's IP, otherwise); in case of down machines, LB responds with 504 timeout.
+- Gateway LB: OSI Layer 3 - security-related functions.
 
 Features:
 
-- all LB can use health checks to verify whether a resource is available to be receiving traffic, otherwise it re-routes the traffic
+- all LB can use health checks to verify whether a resource is available to be receiving traffic, otherwise it re-routes the traffic. If all TG are unhealthy it will send requests to all instances.
 - Listeners listen on ports for particular comm. protocols connection requests
-- Rules set out a set of actions which the Listener can perform. One default rule exists for each listener
+- Rules set out a set of actions which the Listener can perform. One default rule exists for each listener.
 - Target Groups bundle the resources (e.g., EC2 instances) and route traffic to a particular instance, serving as the target for a rule.
 - HTTPS: To use an HTTPS listener, you must deploy at least one SSL/TLS server certificate on
 your load balancer. The load balancer uses a server certificate to terminate the frontend
 connection and then decrypt requests from clients before sending them to the targets. Decryption happens on the LB!
+- ALB/NLB can handle encryption/decryption; (TLS requires to provide one SSL certificate to LB).
+- Deregistration Delay / Connection Draining is an option to keep connections open for a certain period for instances which have become unhealthy in order to gracefully wrap up any open business.
+- LB IPs are dynamic unless requested to be static.
 
 #### AWS Outposts rack
 
