@@ -132,50 +132,19 @@ Sequence:
 
 ### Service capabilities copy/pasted from exams' answers
 
-#### Amazon Inspector
-
-Amazon Inspector is a vulnerability management service that continuously scans your AWS workloads for vulnerabilities. It would not be useful to get a broad overview of things like cost optimization, performance, security, fault tolerance, or service limits.
-
 #### AWS Trusted Advisor
 
 AWS Trusted Advisor provides recommendations by using checks that help you follow AWS best practices. Trusted Advisor evaluates your account by using checks that identify ways to optimize your AWS infrastructure, improve security and performance, reduce costs, and monitor service quotas.
 
-#### AWS Firewall Manager
-
-AWS Firewall Manager is a security management service that allows you to centrally configure and manage firewall rules across your accounts and applications in AWS Organizations. It cannot filter network traffic before it reaches your internet gateway.  
-With AWS Network Firewall, you can define firewall rules that provide fine-grained control over network traffic.  
-Reference: [AWS Network Firewall](https://aws.amazon.com/de/firewall-manager/)
-
-#### AWS Network Firewall
-
-With AWS Network Firewall, you can define firewall rules that provide fine-grained control over network traffic.  
-Reference: [AWS Network Firewall](https://aws.amazon.com/de/network-firewall/)
-
 #### AWS Artifact
 
 AWS Artifact is your go-to, central resource for compliance-related information that matters to you. It provides on-demand access to security and compliance reports from AWS and Independent Software Vendors (ISVs) who sell their products on AWS Marketplace.  
-Reference: [AWS Artifact](https://aws.amazon.com/de/artifact/)
+Reference: [AWS Artifact](https://aws.amazon.com/artifact/)
 
 #### AWS Audit Manager
 
 AWS Audit Manager to map your compliance requirements to AWS usage data with prebuilt and custom frameworks and automated evidence collection. It is not used to provide compliance reports.  
-Reference: [AWS Audit Manager](https://aws.amazon.com/de/audit-manager/)
-
-#### Amazon Macie
-
-Amazon Macie is a data security and data privacy service that uses machine learning (ML) and pattern matching to discover and protect your sensitive data.  
-Reference: [Amazon Macie](https://aws.amazon.com/de/macie/)
-
-#### AWS Shield
-
-AWS Shield is a managed DDoS protection service that safeguards applications running on AWS.
-AWS Shield does not provide cost protection.  
-Reference: [AWS Shield](https://aws.amazon.com/de/shield/)
-
-#### CloudTrail
-
-AWS CloudTrail is a web service that records activity made on your account and delivers log files to your Amazon S3 bucket. CloudTrail provides visibility into user activity by recording actions taken on your account. CloudTrail records important information about each action, including who made the request, the services used, the actions performed, parameters for the actions, and the response elements returned by the AWS service. This information helps you track changes made to your AWS resources and to troubleshoot operational issues.    CloudTrail makes it easier to ensure compliance with internal policies and regulatory standards.  
-Reference: [CloudTrail](https://aws.amazon.com/cloudtrail/faqs/)
+Reference: [AWS Audit Manager](https://aws.amazon.com/audit-manager/)
 
 #### CloudWatch
 
@@ -240,29 +209,6 @@ OpenSearch is an open source, distributed search and analytics suite derived fro
 Amazon OpenSearch Service offers the latest versions of OpenSearch, support for 19 versions of Elasticsearch, as well as visualization capabilities powered by OpenSearch Dashboards and Kibana.
 
 ---
-
-#### Amazon GuardDuty
-
-Amazon GuardDuty is a threat detection service that continuously monitors your AWS accounts and workloads for malicious activity and delivers detailed security findings for visibility and remediation.  
-Reference: [Amazon GuardDuty](https://aws.amazon.com/de/guardduty/)
-
-#### Amazon Detective
-
-- Amazon Detective simplifies the investigative process and helps security teams conduct faster and more effective investigations. With the Amazon Detective prebuilt data aggregations, summaries, and context, you can quickly analyze and determine the nature and extent of possible security issues.
-
-- Uses AI/ML
-
-Reference: [Amazon Detective](https://aws.amazon.com/de/detective/)
-
-#### AWS WAF
-
-WAF is a web application firewall that helps protect your web applications or APIs against common web exploits that may affect availability, compromise security, or consume excessive resources. AWS WAF gives you control over how traffic reaches your applications by enabling you to create security rules that block common attack patterns, such as SQL injection or cross-site scripting, and rules that filter out specific traffic patterns you define. You can get started quickly using Managed Rules for AWS WAF, a pre-configured set of rules managed by AWS or AWS Marketplace Sellers. The Managed Rules for WAF address issues like the OWASP Top 10 security risks. These rules are regularly updated as new issues emerge. AWS WAF includes a full-featured API that you can use to automate the creation, deployment, and maintenance of security rules.  
-Reference: [AWS WAF](https://aws.amazon.com/waf/)
-
-#### Bastion Host
-
-Create the bastion host (EC2 instance) in a public subnet. For the instance security group, add ingress on port 22, and specify the address range of the personnel in the data center. Use a private key to connect to the bastion host. Add an internet gateway, a route table, and a route to the internet gateway in the route table.
-Including bastion hosts in your VPC environment enables you to securely connect to your Linux instances without exposing your environment to the internet. After you set up your bastion hosts, you can access the other instances in your VPC through Secure Shell (SSH) connections on Linux. Bastion hosts are also configured with security groups to provide fine-grained ingress control. An internet gateway enables resources in your public subnets to connect to the internet.
 
 #### DB Failover
 
@@ -656,6 +602,9 @@ servers. It's like you're running code without computers.
 
 1. Pick a supported runtime or create your own.
 2. Clear the way for lambda to access other services by assigning roles (start with an API call or access to S3 storage).
+
+E.g., a tutorial use case assigns the following AWS managed policies to a Lambda role: CloudWatchLogsFullAccess, Amazon DynamoDBFullAccess, AWS Lambda Execute, AmazonSQSFullAccess for a function which does read from a SQS queue and write to DynamoDB.
+
 3. Networking is optional, but one can attach the function to a VPC and SGs.
 4. Define the compute resources required to make your computation.
 5. Define a trigger to make lambda perform a calculation.
@@ -678,6 +627,23 @@ This is a service that is heavily integrated with Lambda.
 
 Containers are generally considered more flexible, re-usable, portable than deploying an instance. They can provide one-off calculations or serve long-running applications.
 
+##### Elastic Container Registry (ECR)
+
+Container images can managed and stored inside this AWS-managed registry instead of [dockerhub](https://hub.docker.com/) or your own hosting solution.
+
+Features:
+
+- Each AWS account receives a private registry.
+- Each registry is tied to a region.
+- Repositories will stores the images: Docker or OCI.
+- Authentication tokens for pushing and accessing images and repository policies to control access to repos and images therein.
+- *ECR Public* can be used to host public images.
+- *Lifecycle policies* manage retention and automatic clean up of unused images.
+- *Image scanning* helps in identifying vulnerabilities (scan-on-push)
+- Sharing of repositories is possible cross-region and cross-account with fine grained configuration options.
+- You can set up caching of public repos in your private repo and can keep it updated.
+- Tagging control for image versioning (protect from overwrites).
+
 ##### ECS: Elastic container service
 
 Proprietary service to manage containers and their surroundings:
@@ -687,13 +653,214 @@ Proprietary service to manage containers and their surroundings:
 - Security: containers can have roles assigned to them.
 - Proprietary means less flexible, hence, not working outside of AWS.
 
+A workflow should be roughly be structured as follows:
+
+1. Create a container image to deploy or use an existing image.
+2. Create a task definition inside ECS, which is compatible with either EC2 or Fargate deployment.
+
+    - Choose minimum resources to get the job done as quickly as possible.
+    - Select image from repository.
+    - Map ports, if required.
+
+3. Create a cluster using either EC2 or Fargate as its basis.
+4. Run new task using the definition from above.
+5. Use public IP address to access container via HTTP port.
+
+*ECS Anywhere*: Feature of Amazon ECS allowing the management of container-based apps on-premises. On top of Docker you will need to install and *AWS SSM Agent* and an *ECS Agent* to, e.g., run ECS containers from within your account (under the `EXTERNAL` launch type).
+
 ##### EKS: Elastic Kubernetes Service
 
 Open-source service with can work cross cloud platform and on premise data center at the cost of reduced compatibility with AWS.
 
+*EKS-Distro* is an option to self-manage an Kubernetes. Where EKS is a fully managed Kubernetes platform, while EKS-D is available to install and manage yourself. You can run EKS-D on-premises, in a cloud, or on your own systems. EKS-D provides a path to having essentially the same Amazon EKS Kubernetes distribution running wherever you need to run it.
+
+*EKS Anywhere*: An on-premises way to manage Kubernetes (K8s) clusters with the same practices used for Amazon EKS - based on EKS-Distro but with focus on cluster lifecycle management.
+
 ##### Fargate
 
+Use Fargate to run containers serverless without the need to manage and maintain EC2 instances. This service can be used with ECS or EKS. This comes at an increased cost so for long running containers one should prefer EC2 over Fargate.
+Also when many containers need to interact over the same host, prefer EC2.
 
+Benefit of Fargate over Lambda however is a different discussion: using containers provides more portability to other systems and greater control. Also consider the duration limits of a Lambda function.
+
+#### CloudWatch Events / EventBridge
+
+Amazon EventBridge (formerly known as CloudWatch Events) is a serverless event bus. It allows you to pass events from a source to an endpoint. It's the communication center that directs the actions of one's serverless application.
+
+You create *EventBridge Rules* by defining and assigning *schedules* or *patterns* to an *event bus* (AWS default events, custom events, ...) and selecting a *target* (Lambda, SNS, SQS, ...). Tagging of rules is essential.
+
+Any API call that happens in AWS can alert a Lambda function, or a variety of different endpoints, that something has happened.
+This is the fastest way to react on issues in your AWS infrastructure.
+
+#### AWS X-Ray for Application insights
+
+Emphasis placed on application insights, AWS X-Ray provides a complete view of requests as they travel through your application and filters visual data across payloads, functions, traces, services, APIs, and more with no-code and low-code motions.
+
+Features:
+
+- X-Ray Daemon can be installed on a EC2 instance / ECS task to log trace data and sen it on to the X-Ray service for collection (UDP port 2000).
+- Natively integrates with services like Lambda, API Gateway
+- Consists of traces, tracing headers (HTTP), segments, service graphs
+
+Note: Used to debug serverless applications, where there are only few other options. Scenarios involving app request insights, viewing response times of downstream resources, and HTTP response analysis.
+
+#### AWS AppSync
+
+Service for scalable GraphQL interfaces for application developers used for fetching app data, declarative coding, and frontend app data fetching.
+Combines data from multiple sources (e.g., Amazon DynamoDB and AWS Lambda).
+
+### Security
+
+#### DDOS Introduction
+
+A Distributed Denial of Service (DDoS) attack attempts to make your website or application unavailable to your end users.
+
+Common DDoS attacks include:
+
+- OSI Layer 4 attacks such as *SYN floods* or *NTP amplification* attacks.
+- Common Layer 7 attacks include floods of GET/POST requests.
+
+Both are mitigated in different ways using AWS tools.
+
+#### CloudTrail monitoring
+
+AWS CloudTrail is a web service that records activity made on your account and delivers log files to your Amazon S3 bucket. CloudTrail provides visibility into user activity by recording actions taken on your account. CloudTrail records important information about each action, including who made the request, the services used, the actions performed, parameters for the actions, and the response elements returned by the AWS service. This information helps you track changes made to your AWS resources and to troubleshoot operational issues.    CloudTrail makes it easier to ensure compliance with internal policies and regulatory standards.  
+CloudTrail records user (management console, CLI) and associated resource activity (API calls). You can identify which users and accounts called AWS, the source IP address from which the calls were made, and when the calls occurred. Everything traceable is logged in S3 buckets for inspection, SSH/RDP are excluded.
+
+Reference: [CloudTrail](https://aws.amazon.com/cloudtrail/faqs/)
+
+#### AWS Shield
+
+AWS Shield is a *free* managed DDoS protection service that safeguards applications running on AWS. Protects all AWS customers on Elastic Load Balancing (ELB), Amazon CloudFront, and Route 53. Protects against SYN/UDP floods, reflection attacks, and other Layer 3 and Layer 4 attacks (only!).
+
+AWS Shield does not provide cost protection.  
+
+Reference: [AWS Shield](https://aws.amazon.com/shield/)
+
+##### AWS Shield Advanced
+
+This provides cost protection against a DDoS attack and offers near-real time notifications of DDoS attacks and access to an dedicated DDoS response team (DRT).
+
+3000 USD p.m.
+
+#### AWS WAF
+
+WAF is a web application firewall that helps protect your web applications or APIs against common web exploits (operates at Layer 7) that may affect availability, compromise security, or consume excessive resources. AWS WAF gives you control over how traffic reaches your applications by enabling you to create security rules that block common attack patterns, such as SQL injection or cross-site scripting, and rules that filter out specific traffic patterns you define. You can get started quickly using Managed Rules for AWS WAF, a pre-configured set of rules managed by AWS or AWS Marketplace Sellers. The Managed Rules for WAF address issues like the OWASP Top 10 security risks. These rules are regularly updated as new issues emerge. AWS WAF includes a full-featured API that you can use to automate the creation, deployment, and maintenance of security rules.
+
+It can react to the following conditions:
+
+- IP addresses or country that requests originate from,
+- Values in request headers,
+- Presence of SQL code or script code that is likely to be malicious (known as  injection)
+- Strings that appear in requests — either specific strings or strings that match regular expression (regex) patterns
+
+IT will react either by *blocking*, *allowing*, or *counting* every request meeting the condition.
+
+Reference: [AWS WAF](https://aws.amazon.com/waf/)
+
+#### Amazon GuardDuty
+
+Amazon GuardDuty is a threat detection service with AI/ML that continuously monitors your AWS accounts and workloads for malicious activity and delivers detailed security findings for visibility and remediation.
+
+- Can work across multiple AWS accounts.
+- Monitors CloudTrail logs, VPC Flow Logs, and DNS logs.
+- Findings appear in the GuardDuty dashboard. CloudWatch Events can
+be used to trigger a Lambda function to address a threat.
+- Updates a database of known malicious domains using external feeds from third parties.
+
+Reference: [Amazon GuardDuty](https://aws.amazon.com/guardduty/)
+
+#### AWS Firewall Manager
+
+AWS Firewall Manager is a security management service that allows you to centrally configure and manage firewall rules across multiple AWS accounts and applications in AWS Organizations. It cannot filter network traffic before it reaches your internet gateway.  
+With AWS Network Firewall, you can define firewall rules that provide fine-grained control over network traffic.
+
+It ties together management of AWS WAF and Shield (Advanced) across multiple accounts.
+
+Reference: [AWS Firewall Manager](https://aws.amazon.com/firewall-manager/)
+
+#### AWS Network Firewall
+
+With AWS Network Firewall, you can define firewall rules that provide fine-grained control over network traffic on the VPC level. AWS Network Firewall operates at Layers 3-7. AWS Network Firewall protects the perimeter of your virtual private cloud. It controls inbound and outbound traffic for the entire network. It integrates with Firewall Manager.
+
+Reference: [AWS Network Firewall](https://aws.amazon.com/network-firewall/)
+
+#### Amazon Macie
+
+Amazon Macie is a data security and data privacy service that uses machine learning (ML) and pattern matching to discover and protect your sensitive data (PII data) within S3 buckets.
+
+It will alert you on encountering unencrypted or publicly accessible buckets.
+
+Reference: [Amazon Macie](https://aws.amazon.com/macie)
+
+#### Amazon Inspector
+
+Amazon Inspector is a vulnerability management service that continuously scans your AWS workloads for vulnerabilities (e.g., open ports). It will inspect you network (network assessments) and EC2 instances (host assessments, which need an agent installed) running on it. After performing an assessment, Amazon Inspector produces a detailed list of security findings prioritized by level of severity.
+
+Reference: [Amazon Inspector](https://aws.amazon.com/inspector)
+
+#### Amazon Detective
+
+- Amazon Detective simplifies the investigative process and helps security teams conduct faster and more effective investigations. With the Amazon Detective prebuilt data aggregations, summaries, and context, you can quickly analyze and determine the nature and extent of possible security issues.
+
+- Uses AI/ML
+
+Reference: [Amazon Detective](https://aws.amazon.com/detective/)
+
+#### AWS Key Management Service (KMS)
+
+AWS Key Management Service lets you create, manage, and control cryptographic keys across your applications and AWS services.
+You start using the service by requesting the creation of a customer master key (CMK). You control the lifecycle of the CMK as well as who can use or manage it. For generating a CMK you can:
+
+1. AWS let it generate for you on a multi tenancy system, and manage things like auto-rotation.
+2. You can import your own key material and associate it with a CMK.
+3. Use CloudHSM cluster - renting a dedicated physical HSM from AWS to link into your KMS.
+
+Note: A hardware security module (HSM) is a physical computing device that safeguards and manages digital keys.
+
+Reference: [AWS KMS](https://aws.amazon.com/kms/)
+
+#### AWS Secrets Manager
+
+Secrets Manager is a service that securely stores, encrypts, and rotates your database credentials and other secrets.
+Usable for: RDS credentials, Credentials for non-RDS databases, Any other type of secret, provided you can store it as a key-value pair (SSH keys, API keys).
+
+Features:
+
+- Encryption in transit and at rest using KMS,
+- Automatically rotates credentials,
+- Apply fine—grained access control using IAM policies.
+
+One main use case is for applications to retrieve a secret programmatically via API call to Secrets Manager (no hard-coding of secrets).
+
+Note: Care must be taken when moving applications to rotated keys, that there are no pre-rotation credentials hard-coded: there will always be a test rotation after enabling the function which voids the old key.
+
+Reference: [AWS Secrets Manager](https://aws.amazon.com/secrets-manager)
+
+#### AWS Systems Manager Parameter Store
+
+Parameter Store is a capability of AWS Systems Manager that provides secure, hierarchical storage for configuration data management and secrets management.
+
+You can store data such as passwords, database strings, Amazon Machine Image (AMI) IDs, and license codes as parameter values. You can store values as plain text or encrypted data.
+
+Parameters store is free (limited to 10'000 keys, no key rotation, no password generation function).
+
+Reference: [AWS Systems Manager Parameter Store](https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-parameter-store.html)
+
+#### Using presigned URLs or cookies to temporarily share content on S3
+
+Most of the time one would not want to expose the contents of their S3 buckets to the public internet.
+For a more directed content sharing there are two popular options:
+
+1. *Presigned URLs*: The object owner has permission to access these objects. However, the object owner can optionally share objects with others by creating a presigned URL, using their own security credentials, to grant time-limited permission to download the objects.
+2. *Presigned Cookies*: This can be useful when you want to provide access to multiple restricted files. The cookie will be saved on the user's computer, and they will be able to browse the the entire contents of the restricted content.
+
+#### Bastion Host
+
+Create the bastion host (EC2 instance) in a public subnet. For the instance security group, add ingress on port 22, and specify the address range of the personnel in the data center. Use a private key to connect to the bastion host. Add an internet gateway, a route table, and a route to the internet gateway in the route table.
+Including bastion hosts in your VPC environment enables you to securely connect to your Linux instances without exposing your environment to the internet. After you set up your bastion hosts, you can access the other instances in your VPC through Secure Shell (SSH) connections on Linux. Bastion hosts are also configured with security groups to provide fine-grained ingress control. An internet gateway enables resources in your public subnets to connect to the internet.
+
+### Scaling
 
 #### Scaling compute power
 
@@ -758,7 +925,7 @@ What we can gather from the question is that the spikes at the beginning and end
 1. Scale vertically by using more powerful machines
 2. Scale by adding storage - it can only be increased, not decreased.
 3. Scale by adding Read-replicas, in-region or cross-region (read replicas get separate endpoints)
-4. Consider a Aurora Serverless where scaling is outsourced to AWS
+4. Consider a Aurora Serverless where scaling is outsourced to AWS with billing per second. ACUs (Aurora Capacity Units) are used to scale the serverless machine.
 5. Consider refactoring the DB and move to NoSQL/Dynamo DB (!)
 
 ##### Scaling Non-Relational DBs
@@ -1210,10 +1377,6 @@ This would be the best way to anticipate what the AWS costs will be.
 #### AWS Cost Explorer
 
 AWS Cost Explorer has an easy-to-use interface that lets you visualize, understand, and manage your AWS costs and usage over time. Get started quickly by creating custom reports that analyze cost and usage data. Analyze your data at a high level (for example, total costs and usage across all accounts), or dive deeper into your cost and usage data to identify trends, pinpoint cost drivers, and detect anomalies. This explores previous costs and is not used as a calculator.
-
-#### AWS Shield Advanced
-
-This provides cost protection against a DDoS attack.
 
 #### AWS Serverless Application Repository
 
