@@ -1,3 +1,4 @@
+<!-- markdownlint-disable MD033 -->
 # Working with Amazon Web Services (AWS)
 
 ## Adding AWS-CLI to Ubuntu (v. 20.04)
@@ -7,11 +8,11 @@
 - `curl -sS "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-2.0.30.zip" -o "awscliv2.zip"`  
   update above path by looking up [latest-version](https://github.com/aws/aws-cli/blob/v2/CHANGELOG.rst)
 - unzip content and install `unzip awscliv2.zip && sudo ./aws/install`
-- verfiy installation and cleanup `aws --version && rm -rf aws && rm awscliv2.zip`
+- verify installation and cleanup `aws --version && rm -rf aws && rm awscliv2.zip`
 
 ### Linking the CLI to your AWS account
 
-- check "programatic access" in IAM user detail
+- check "programmatic access" in IAM user detail
 - add new user
 - add permissions - policies(left) - "AdministratorAccess"
 - open User summary &rightarrow; "Security credentials" &downarrow; "Access keys" &rightarrow; "Create access key" download CSV or copy/paste key to a safe place
@@ -96,14 +97,14 @@ Sequence:
       ```
 
     - initial upload of files, e.g. from your own repository (Add Files / Folders)
-    - added a second bucket called *www.bucketname* and repeated above first two steps but instead
+    - added a second bucket called `www.bucketname` and repeated above first two steps but instead
     of uploading the same hosted content again I added a redirect  
     <img src="./images/2021-09-01_AWS_S3_subdomain_redirect.png" alt="Adjusting redirect of one subdomain to another" width="728"/>
 
 2. setting up *Route 53* by adding a hosted zone
     - add new hosted zone (not included in AWS free tier!) for both bucket destinations  
       domain *bucketname* &rightarrow; s3-website.eu-central-1.amazonaws.com S3 bucket  
-      subdomain *www.bucketname* &rightarrow; s3-website.eu-central-1.amazonaws.com S3 bucket
+      subdomain `www.bucketname` &rightarrow; s3-website.eu-central-1.amazonaws.com S3 bucket
     - screenshot  
       <img src="./images/2021-09-01_AWS_Route53_HostedZoneS3.png" alt="Setting up Route53 hosted zone for website S3 bucket" width="728"/>
     - copy AWS Route 53 DNS server names for use in step 3
@@ -126,6 +127,7 @@ Sequence:
 &rightarrow; use the s3 website endpoint to verify the result  
 &rightarrow; add versioning or flush the cache (*expect added costs*)
 
+<!-- markdownlint-enable MD033 -->
 ---
 
 ## AWS Certified Solutions Architect - Associate Course Preparation
@@ -1267,7 +1269,7 @@ This provides cost protection against a DDoS attack and offers near-real time no
 
 #### AWS WAF
 
-WAF is a web application firewall that helps protect your web applications or APIs against common web exploits (operates at Layer 7) that may affect availability, compromise security, or consume excessive resources. AWS WAF gives you control over how traffic reaches your applications by enabling you to create security rules that block common attack patterns, such as SQL injection or cross-site scripting, and rules that filter out specific traffic patterns you define. You can get started quickly using Managed Rules for AWS WAF, a pre-configured set of rules managed by AWS or AWS Marketplace Sellers. The Managed Rules for WAF address issues like the OWASP Top 10 security risks. These rules are regularly updated as new issues emerge. AWS WAF includes a full-featured API that you can use to automate the creation, deployment, and maintenance of security rules.
+WAF is a web application firewall that helps protect your web applications or APIs against common web exploits (operates at Layer 7) that may affect availability, compromise security, or consume excessive resources. AWS WAF gives you control over how traffic reaches your applications by enabling you to create security rules that block common attack patterns, such as SQL injection or cross-site scripting, and rules that filter out specific traffic patterns you define. You can get started quickly using Managed Rules for AWS WAF, a pre-configured set of rules managed by AWS or AWS Marketplace Sellers. The Managed Rules for WAF address issues like the [OWASP Top 10 security risks](https://owasp.org/www-project-top-ten/). These rules are regularly updated as new issues emerge. AWS WAF includes a full-featured API that you can use to automate the creation, deployment, and maintenance of security rules.
 
 It can react to the following conditions:
 
@@ -1435,7 +1437,123 @@ Including bastion hosts in your VPC environment enables you to securely connect 
 
 ---
 
+### Infrastructure as Code (IaC) and Automation
+
+Benefits:
+
+- Time: less time lost on repetitive tasks,
+- Consistency: identical or reproducible results for deployments,
+- Security: introducing less human error,
+- Cost: savings on error-mitigation and efficiency.
+
+#### CloudFormation
+
+Provides infrastructure-as-code language for creating immutable infrastructure, which gets translated to AWS API calls behind the scenes to create an infrastructure *stack*. For applying changes on a template on an existing stack, the system throws away the old infrastructure and re-builds it anew - there might be some recycling going on for identical pieces. CloudFormation is a declarative programming language. It supports either JSON or YAML formatting. The latter *easily* allows comments.
+
+A template consists of three main sections:
+
+- Parameters: to be selected during launch,
+- Mappings: values to fill themselves in during deployment, (e.g., subnet address ranges),
+- Resources: describing the infrastructure.
+
+Note: hard-coded information (mappings, e.g. region / AMI name) can lock templates in place causing them to fail during deployment (e.g., in another region).
+
+Workflow for deployment:
+
+1. Prepare template - or choose a sample in the next step,
+2. Create a new CF stack and name it,
+3. (Optional): upload template,
+4. Adjust parameters as they were built into the customizing options of the template, e.g. the machine *InstanceType*,
+5. Acknowledge settings and launch - the template will be uploaded to S3 and deployed which can take a while.
+
+#### Elastic Beanstalk
+
+Easy-to-use all in one service for automated deployment and scaling web applications and services developed with a variety of supported languages. Provides Platform as a service (PaaS), so all the infrastructure is managed (networking, ELBs, scaling, compute, storage) and you just need to upload your code to run it on a new virtual computer.
+Selecting a platform specifies the main programming language and version installed on the EC2 instances (Docker is included as well!).
+
+It's not serverless.
+
+#### Systems Manager
+
+Gives you the ability to easily patch, update, manage, and configure your EC2 instances along with on-premise architecture.
+
+Features:
+
+- **Automation Documents** (Currently referred to as *Runbooks*): Can be used to control your instances or AWS resources in close collaboration with AWS Config.
+- Provides **Run Command** installed with the Systems Manager agent on each EC2 instance lets you run commands on each host automated. Note: a role permitting an EC2 to communicate with Systems MAnager is required as well.
+- **Patch manager**: to automate the management of software versions.
+- **Parameter Store**: to keep track of and access configuration parameters and also store credentials.
+- One can control their on-premises architecture as well by using **Hybrid Activations** and installing an Systems Manager agent, there.
+- **Session manager** to remotely connect to one's architecture.
+
+---
+
+### Caching Data
+
+Caching should be used wherever available, doable, and affordable.
+
+#### CloudFront
+
+It's a content delivery network (CDN) which provides external caching using a network of physical AWS edge location. Ideal for caching *static* content, e.g. images, videos, ...
+After the first request of a particular content object by a user, it gets placed in the closest assigned edge location (you can limit hosting to continent) for speeding up subsequent request by any user.
+
+Features:
+
+- Security is HTTPS encryption by default.
+- Instead of relying on TTL for stale content to expire in the cache you can define own expiry times for your content.
+- You can restrict access to CloudFront content by using [signed URLs and signed Cookies](#using-presigned-urls-or-cookies-to-temporarily-share-content-on-s3).
+- Can be used to cache content hosted on non-AWS infrastructure.
+
+For using CloudFront for one's content a *distribution* is generated, where the origin  domain name and path patterns are selected as well as the type of requests it should handle.
+
+#### Elasticache
+
+Elasticache serves the internal caching in front of relational data bases.
+
+Two service flavors exist based on open-source technologies:
+
+- Memcached: serves a simple DB caching. It's not a database by itself, provides no failover or Multi-AZ support, and no backups.
+- Redis: is supported as a caching solution, but *also* can serve as a standalone non-relational database within this service, providing failover and Multi-AZ support. It also supports backups.
+
+Reference: [Elasticache](https://aws.amazon.com/elasticache)
+
+#### DynamoDB Accelerator (DAX)
+
+Exclusive internal caching solution for DynamoDB:
+
+- in-memory, it can reduce DynamoDB response times from milliseconds to microseconds.
+- this cache is highly available and lives inside the VPC you specify.
+- you have extensive control over the caching operation; node size, count for the cluster, TTL for the data, and maintenance windows for changes and updates.
+
+#### Global Accelerator
+
+AWS Global Accelerator is a networking service that helps you improve the availability, performance, and security of your public applications. Global Accelerator solves the IP caching problem as it provides two global static public IPs that act as a fixed entry point to your application endpoints, such as Application Load Balancers, Network Load Balancers, Amazon Elastic Compute Cloud (EC2) instances, and elastic IPs. In case something changes in the routing of the serving infrastructure it is fixed by Global Accelerator. In one use case a company could front several localized customer-facing ELBs through one common IP, providing the best connection depending on the region of the customer.
+
+Features:
+
+- Uses edge locations to speed things up
+- You can add weights on the routing endpoints towards different parts of the infrastructure.
+
+---
+
 ### Pricing, Architecture, Administration
+
+#### AWS Organizations
+
+AWS Organizations lets you create new AWS accounts at no additional charge. With accounts in an organization, you can easily allocate resources, group accounts, and apply governance policies to accounts or groups. You can manage and organize your accounts under a single bill, set central policies and configuration requirements for your entire organization, create custom permissions or capabilities within the organization, and delegate responsibilities to other accounts so they can manage on behalf of the organization.
+
+Features:
+
+- Facilitates the setup of a logging account for [CloudTrail](#cloudtrail-monitoring).
+- Programmatic account creation / deletion.
+- Offers Service Control Policies:
+  - Which will be applied to every single resource inside an account.
+  - They are the ultimate way to restrict permissions, and even apply to the root account.
+  - They only reduce permission explicitly denying one thing or *exclusively* allowing something else for nothing more beyond it.
+- You can share AWS resources within your organization using AWS Resource Access Manager (RAM). For example, you can create your AWS Virtual Private Cloud (VPC) subnets once and share them across your organization.
+
+
+Reference: [Organizations](https://aws.amazon.com/organizations/)
 
 #### AWS Pricing Calculator
 
