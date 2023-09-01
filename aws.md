@@ -1549,19 +1549,95 @@ Features:
 - Offers Service Control Policies:
   - Which will be applied to every single resource inside an account.
   - They are the ultimate way to restrict permissions, and even apply to the root account.
-  - They only reduce permission explicitly denying one thing or *exclusively* allowing something else for nothing more beyond it.
+  - They can only reduce permissions, either explicitly by denying rights on resources or by *exclusively* allowing only access to given resources.
 - You can share AWS resources within your organization using AWS Resource Access Manager (RAM). For example, you can create your AWS Virtual Private Cloud (VPC) subnets once and share them across your organization.
-
+- Use case: having the main account for storing shared reserved instances, regulate operational accounts for having not too many permissions using SCPs,  and pay all bills.
 
 Reference: [Organizations](https://aws.amazon.com/organizations/)
+
+##### AWS Resource Access Manager (RAM)
+
+Excellent for cost saving being a free service. Note, that with infrastructure shared out,
+you necessarily won't "see" what is done from the side of the recipient, e.g.
+deployed EC2 instances.
+
+Typical resources to share:
+
+- Transit gateways,
+- License Manager,
+- Dedicated Hosts,
+- VPC subnets,
+- Route 53 Resolver
+
+When connecting infrastructure provisioned on two accounts, one could either use [VPC peering](#vpc-peering) or RAM.
+For intra network sharing within the same AWS region preference should be placed on RAM, while for multi-region configuration one should utilize peering.
+
+#### IAM - Cross-Account Role Access
+
+It's a feature in [IAM](#aws-iam) to temporarily jump into another account via a role instead of setting up IAM user account. As the number of AWS accounts you manage increases, duplicating IAM accounts could create a security vulnerability. Cross—account role access gives you the ability to set up temporary access you can easily control.
+
+1. The primary account (which wants to permit resource access) creates a role, attaches resource policies and grants that role to the secondary account, group, user.
+2. The secondary can now assume that role when pointing to the primary account and role name.
+
+#### AWS Config
+
+Config is an inventory management and control tool. It allows you to show the history of your infrastructure along with creating rules to make sure it conforms to the best practices/standards you've laid out for your organization.
+AWS Config will also automatically deliver a configuration history file to the Amazon Simple Storage Service (S3) bucket that you specify. You can also record configurations for third-party resources or custom resource types.
+
+Features:
+
+- Provides list of all resources in the account.
+- Provides timeline of configuration changes for all resources and a link to [CloudTrail](#cloudtrail-monitoring) events.
+- Lists conformance of resources to compliance rules set out in Config and offers Remediation/Correction via [Automation Documents/Runbooks](#systems-manager).
+- Allows to track deleted resources.
+- Multi-region infrastructure information can be consolidated in one region, e.g. listing EC2 instance across all accounts.
+
+Note: this is not a free service.
+
+Reference: [AWS Config](https://aws.amazon.com/config/)
+
+#### AWS Directory Service / AD Connector
+
+AWS Directory Service for Microsoft Active Directory, also known as AWS *Managed Microsoft Active Directory* (AD), enables your directory-aware workloads and AWS resources to use managed Active Directory (AD) in AWS. AWS Managed Microsoft AD is built on actual Microsoft AD and does not require you to synchronize or replicate data from your existing Active Directory to the cloud. You can use the standard AD administration tools and take advantage of the built-in AD features, such as Group Policy and single sign-on (SSO).
+
+While the first option is to set up AD within AWS, the second option would be to set up a tunnel to your pre-existing on-premises AD via *AD Connector*.
+
+A third option would be to use *Simple AD* a standalone directory powered by Linux Samba Active Directory-compatible server.
+
+Reference: [AWS Directory Service](https://aws.amazon.com/directoryservice/)
+
+#### AWS Cost Management / Cost Explorer
+
+AWS Cost Explorer has an easy-to-use interface that lets you visualize, understand, and manage your AWS costs and usage over time. Get started quickly by creating custom reports that analyze cost and usage data. Analyze your data at a high level (for example, total costs and usage across all accounts), or dive deeper into your cost and usage data to identify trends, pinpoint cost drivers, and detect anomalies. This explores previous costs and is not used as a calculator.
+
+You can and should use tags on resources to aggregate cost or enable it for filtering.
+
+You can view your costs and usage using the Cost Explorer user interface free of charge. You can also access your data programmatically using the Cost Explorer API. Each paginated API request incurs a charge of $0.01. You can't disable Cost Explorer after you enable it. You can view data for up to the last 12 months.
+
+Reference: [AWS Cost Explorer](https://docs.aws.amazon.com/cost-management/latest/userguide/ce-what-is.html)
+
+#### AWS Budgets
+
+AWS Budgets lets organizations to set custom cost and usage budgets that *alert* you when your budget thresholds are exceeded (or forecasted to exceed). You can also create budgets to track your aggregate Reservation and Savings Plans utilization and coverage metrics. You can monitor and receive notifications on your budgets free of charge.
+
+Types of budget (two listings/alerts are free of charge each month):
+
+- Cost budget: lists how much we are actually spending.
+- Usage budget: lists how much we are using from an entitlement to create/use architecture.
+- Reservation budget: lists how well the reserved capacity is being employed.
+- Savings Plans budget: list how well we are making use of infrastructure bought under our savings plans.
+
+Reference: [AWS Budgets](https://aws.amazon.com/aws-cost-management/aws-budgets/)
+
+#### AWS Cost and Usage Reports (CUR)
+
+continue
+
+Reference: [Cost and Usage Reports](https://aws.amazon.com/aws-cost-management/aws-cost-and-usage-reporting/)
 
 #### AWS Pricing Calculator
 
 This would be the best way to anticipate what the AWS costs will be.
-
-#### AWS Cost Explorer
-
-AWS Cost Explorer has an easy-to-use interface that lets you visualize, understand, and manage your AWS costs and usage over time. Get started quickly by creating custom reports that analyze cost and usage data. Analyze your data at a high level (for example, total costs and usage across all accounts), or dive deeper into your cost and usage data to identify trends, pinpoint cost drivers, and detect anomalies. This explores previous costs and is not used as a calculator.
 
 #### AWS Trusted Advisor
 
