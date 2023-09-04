@@ -616,7 +616,7 @@ Using AWS Direct Connect, you can establish private connectivity between AWS and
 Dedicated Connection: AWS provisions a physical connection with a single customer.
 Hosted Connection: Partner provisions connection
 
-Basically, a fibre is run from customer's premise to the closest AWS Direct Connect Location and wired to a Dedicated/Hosted router which goes to the AWS backbone.
+Basically, a fibre is run from customer's premises to the closest AWS Direct Connect Location and wired to a Dedicated/Hosted router which goes to the AWS backbone.
 
 ##### Transit Gateway
 
@@ -1192,7 +1192,7 @@ A workflow should be roughly be structured as follows:
 
 ##### EKS: Elastic Kubernetes Service
 
-Open-source service with can work cross cloud platform and on premise data center at the cost of reduced compatibility with AWS.
+Open-source service with can work cross cloud platform and on-premises data center at the cost of reduced compatibility with AWS.
 
 *EKS-Distro* is an option to self-manage an Kubernetes. Where EKS is a fully managed Kubernetes platform, while EKS-D is available to install and manage yourself. You can run EKS-D on-premises, in a cloud, or on your own systems. EKS-D provides a path to having essentially the same Amazon EKS Kubernetes distribution running wherever you need to run it.
 
@@ -1475,7 +1475,7 @@ It's not serverless.
 
 #### Systems Manager
 
-Gives you the ability to easily patch, update, manage, and configure your EC2 instances along with on-premise architecture.
+Gives you the ability to easily patch, update, manage, and configure your EC2 instances along with on-premises architecture.
 
 Features:
 
@@ -1538,6 +1538,13 @@ Features:
 
 ### Pricing, Architecture, Administration
 
+Focus around the following topics:
+
+- Can it be centralized?
+- How do we standardize?
+- How do we enforce the standards?
+- Are the users internal or external?
+
 #### AWS Organizations
 
 AWS Organizations lets you create new AWS accounts at no additional charge. With accounts in an organization, you can easily allocate resources, group accounts, and apply governance policies to accounts or groups. You can manage and organize your accounts under a single bill, set central policies and configuration requirements for your entire organization, create custom permissions or capabilities within the organization, and delegate responsibilities to other accounts so they can manage on behalf of the organization.
@@ -1576,8 +1583,11 @@ For intra network sharing within the same AWS region preference should be placed
 
 It's a feature in [IAM](#aws-iam) to temporarily jump into another account via a role instead of setting up IAM user account. As the number of AWS accounts you manage increases, duplicating IAM accounts could create a security vulnerability. Cross—account role access gives you the ability to set up temporary access you can easily control.
 
-1. The primary account (which wants to permit resource access) creates a role, attaches resource policies and grants that role to the secondary account, group, user.
-2. The secondary can now assume that role when pointing to the primary account and role name.
+1. The primary account (which wants to permit resource access) creates a role and attaches resource policies.
+2. Then he grants that role to the secondary account using a trust policy which defines which principals (account, group, user) can assume the role, and under which conditions. A trust policy is a specific type of resource-based policy for IAM roles.
+3. The secondary can now assume that role when pointing to the primary account and role name.
+
+Reference: [AWS Trust Policies](https://aws.amazon.com/blogs/security/how-to-use-trust-policies-with-iam-roles/)
 
 #### AWS Config
 
@@ -1595,6 +1605,14 @@ Features:
 Note: this is not a free service.
 
 Reference: [AWS Config](https://aws.amazon.com/config/)
+
+#### AWS IAM Identity Center (Successor to AWS Single Sign-On)
+
+AWS IAM Identity Center helps you securely create or connect your workforce identities and manage their access centrally across AWS accounts and applications. IAM Identity Center is the recommended approach for workforce authentication and authorization on AWS for organizations of any size and type. Using IAM Identity Center, you can create and manage user identities in AWS, or connect your existing identity source, including Microsoft Active Directory, Okta, Ping Identity, JumpCloud, Google Workspace, and Azure Active Directory (Azure AD).
+
+Make sure you're using AWS SSO for internal user management and [Cognito](#authenticating-access-with-amazon-cognito) for external management.
+
+Reference: [Identity Center / SSO](https://aws.amazon.com/iam/identity-center/)
 
 #### AWS Directory Service / AD Connector
 
@@ -1631,65 +1649,246 @@ Reference: [AWS Budgets](https://aws.amazon.com/aws-cost-management/aws-budgets/
 
 #### AWS Cost and Usage Reports (CUR)
 
-continue
+The *most comprehensive* set of cost and usage data available for AWS spending:
+
+- billing reports is published in S3
+- daily update of new `CSV` files in S3 bucket
+- drill-down by the time interval, service and resource, or by tags.
+- integrates with [Athena](#amazon-athena-and-glue), Redshift, etc., ...
 
 Reference: [Cost and Usage Reports](https://aws.amazon.com/aws-cost-management/aws-cost-and-usage-reporting/)
 
-#### AWS Pricing Calculator
+#### AWS Compute Optimizer
 
-This would be the best way to anticipate what the AWS costs will be.
+AWS Compute Optimizer helps avoid overprovisioning and underprovisioning four types of AWS resources—Amazon Elastic Compute Cloud (EC2) instance types, Amazon Elastic Block Store (EBS) volumes, Amazon Elastic Container Service (ECS) services on AWS Fargate, and AWS Lambda functions—based on your utilization data. Reports current usage optimizations and potential recommendations, provides graphical history data. Service can be for single-account use but also integrates with AWS Organizations, so you can pick to whether optimize infrastructure across a whole set of accounts or just one OU.
+
+Allows to purchase savings plans (Compute, EC2, Sagemaker flavor) which will be applied after reserved instances have been spent.
+
+Basic service to investigate needs to run for 14 days to accumulate meaningful data in [CloudWatch](#cloudwatch). You need to actively turn it on, however.
+Extended service billed for additional metrics added to CloudWatch. (ca. 0.20€ p. instance / month) can provide recommendations for autoscaling.
+
+Reference: [Compute Optimizer](https://docs.aws.amazon.com/managedservices/latest/userguide/compute-optimizer.html)
 
 #### AWS Trusted Advisor
 
-AWS Trusted Advisor provides recommendations by using checks that help you follow AWS best practices. Trusted Advisor evaluates your account by using checks that identify ways to optimize your AWS infrastructure, improve security and performance, reduce costs, and monitor service quotas.
+AWS Trusted Advisor provides recommendations by using checks (auditing) that help you follow AWS best practices. Trusted Advisor evaluates your account by using checks that identify ways to optimize your AWS infrastructure, improve *security* and *performance*, *reduce costs*, *fault tolerance*, and *monitor service quotas*. Latter can for instance raise an alarm in case you are reaching a critical value (80%, e.g., 4) in you number of VPCs (default maximum is 5).
+
+The basic package only includes parts of the checks and recommendations and you would have to buy an AWS Support plan to unlock more features.
+
+Reference: [Trusted Advisor](https://aws.amazon.com/premiumsupport/technology/trusted-advisor/)
+
+#### AWS Control Tower
+
+AWS Control Tower orchestrates multiple AWS services on your behalf - across multiple accounts - while maintaining the security and compliance / governance needs of your organization. It starts by rolling out three shared accounts for management, log archiving, and audit purposes.
+
+Features:
+
+- Landing zone: provides a  multi-account AWS environment based on security and compliance best practices (provides:  identity management, federated access, logging of CloudTrail events to S3, ...).
+- Comprehensive Controls Management / Guardrails: high-level rule set formulated in plain language providing ongoing governance. They can be detective, preventive, or proactive and can be either mandatory or optional. Enforced via [SCPs](#aws-organizations).
+- Account factory: to quickly roll out accounts based on templates.
+
+Reference: [Control Tower](https://aws.amazon.com/controltower/)
+
+#### AWS License Manager
+
+License Manager makes it easier for you to manage your software licenses from vendors, such as Microsoft, SAP, Oracle, and IBM, across AWS and your on-premises environments.
+Helps centrally manage licenses across AWS accounts and *on-premises* environments.
+
+Reduces averages and penalties via inventory tracking and rule-based controls for consumption, leading to prevention of license abuse.
+
+Reference: [License Manager](https://aws.amazon.com/license-manager/)
+
+#### AWS Personal Health Dashboard / AWS Health Dashboard
+
+The AWS Health Dashboard is the single place to learn about the availability and operations of AWS services. You can view the overall status of AWS services, and you can sign in to view personalized communications about your particular AWS account or organization. Your account view provides deeper visibility into resource issues, upcoming changes, and important notifications.
+
+You can inspect upcoming maintenance tasks that may affect your accounts and resources and be more preventive than reactive with potential issues (e.g., using [Automation Documents](#aws-config) to stop/start an instance for maintenance).
+
+It has near—instant delivery of notifications and alerts to speed up troubleshooting or prevention, using [Amazon EventBridge](#cloudwatch-events--eventbridge).
+
+Reference: [Health Dashboard](https://aws.amazon.com/premiumsupport/technology/aws-health-dashboard/)
+
+#### AWS Pricing Calculator
+
+AWS Pricing Calculator is a web-based planning tool that you can use to create estimates for your AWS use cases. You can use it to model your solutions before building them, explore the AWS service price points, and review the calculations behind your estimates. You can use it to help you plan how you spend, find cost saving opportunities, and make informed decisions when using Amazon Web Services.
+
+Reference: [AWS Pricing Calculator](https://calculator.aws/#/)
+
+#### AWS Service Catalog and AWS Proton
+
+AWS Service Catalog lets you centrally manage your cloud resources (AMI images, servers, software, any other preconfigured component) to achieve governance at scale of your infrastructure as code (IaC) templates, written in *CloudFormation* or Terraform configurations. With AWS Service Catalog, you can meet your compliance requirements while making sure your customers can quickly deploy the cloud resources they need using those catalog templates.
+
+Permits self-service, access control and versioning of resource templates.
+
+AWS Proton is a deployment workflow tool for modern applications that helps platform and DevOps engineers achieve organizational agility. Used to automate Infrastructure as Code (IaC) provisioning and deployments. Allows to define standardized infrastructure for your *serverless* and *container-based* apps. AWS Proton automatically provisions resources, configures CI/CD, and deploys the code.
+It supports AWS CloudFormation and Terraform IaC providers.
+
+References: [Service Catalog](https://aws.amazon.com/servicecatalog/) and [Proton](https://aws.amazon.com/proton/)
 
 #### AWS Well-Architected (WA) Tool
 
-The AWS WA Tool offers a means of consistently measuring your AWS architectures against standardized best practices. It helps assist in documenting decisions, providing recommendations, and guiding you in design decisions.
+The AWS WA Tool offers a means of consistently *measuring* your AWS architectures against standardized best practices over time. It helps assist in documenting and architectural decision-making, providing recommendations, and guiding you in design decisions. There is no additional charge for the AWS Well-Architected Tool. You pay only for your underlying AWS resources.
+
+WA Pillars:
+
+- Operational Excellence
+- Reliability
+- Security
+- Performance Efficiency
+- Cost Optimization
+- Sustainability
+
+Reference: [Well-Architected Tool](https://aws.amazon.com/well-architected-tool/)
 
 ---
 
 ### Data and infrastructure migration topics
 
-#### AWS Storage Gateway - File Gateway
+#### AWS Snow Family - (Snowcone, Snowball Edge, Snowmobile)
 
-File Gateway supports NFS and SMB protocol and can integrate with an on-premises Active Directory.
+The Snow Family is a set of secure *physical* appliances that provide petabyte—scale data collection and processing solutions at the edge and migrate large—scale data into and out of AWS. They offer built—in computing capabilities, enabling customers to run their operations in remote locations that do not have data center access or reliable network connectivity.
 
-#### AWS Storage Gateway - Tape Gateway
+No transfer via the internet needed. Turnaround time is about one week.
 
-This solution is used mainly for backups. AWS Storage Gateway is not the most cost-effective method of migrating data to the cloud.
+1. AWS Snowcone: 8 TB of storage (portable HD size)
+2. AWS Snowball is the most cost-effective method of migrating data to the cloud in the order of terabytes (48 to 81 TB). Comes of several flavors (suitcase size).
+3. Snowmobile allows for 100 PB of storage, designed for data center migration (shipping container).
 
-#### AWS Snowball
+Reference: [Snow Family](https://aws.amazon.com/snow/)
 
-AWS Snowball is the most cost-effective method of migrating data to the cloud in the order of terabytes.
+#### AWS Storage Gateway Family - (File / Volume / Tape Gateway)
+
+Storage Gateway is a hybrid cloud storage service that helps you merge on—premises resources with the cloud. It can help with a lift-and-shift / one-time migration or a long-term pairing of your architecture with AWS while [Data Sync](#aws-datasync) would be a one-shot solution. The service is deployed via AWS configured virtual machines deployed on-premises.
+AWS Storage Gateway is not the most cost-effective method of migrating data to the cloud.
+
+1. *File Gateway* supports NFS and SMB protocol and can integrate with an on-premises Active Directory. It is an S3-driven backup solution for on-prem file storage with the option of caching back only the recently served files for data centers running short of storage, creating a two plus tier architecture for storage.
+2. *Volume Gateway* is used to back up hard drives of virtual machines in the data centre to S3 converting them to EBS and adding a snapshot to S3 which can assist in machine migration.
+3. *Tape Gateway* is used mainly for backups. Provides virtualization of physical tape drives and backs up encrypted into S3.
+
+Reference: [Storage Gateway Family](https://aws.amazon.com/storagegateway/)
 
 #### AWS DataSync
 
-You work for an advertising company that has a large amount of data hosted on-premises. They would like to move this data to AWS and then decommission the on-premises data center. What would be the easiest way to achieve this?This is the best answer because you are decommissioning the on-premises infrastructure, so you should use AWS DataSync to migrate the data to AWS.
+High-level: agent-based (runs on on-prem servers) solution to migrate data on-premises to the cloud. All is encrypted in transit.
+Data Sync is recommended for one-time migrations.
 
-#### AWS SMS (Server Migration Service)
+1. AWS DataSync is a secure, online service that automates and accelerates moving data between on-premises and AWS Storage services. DataSync can copy data between Network File System (NFS) shares, Server Message Block (SMB) shares, Hadoop Distributed File Systems (HDFS), self-managed object storage, AWS Snowcone, Amazon Simple Storage Service (Amazon S3) buckets, Amazon Elastic File System (Amazon EFS) file systems, Amazon FSx for Windows File Server file systems, Amazon FSx for Lustre file systems, Amazon FSz for OpenZFS file systems, and Amazon FSx for NetApp ONTAP file systems.
+2. It is also used to transfer data between AWS Storage services so you can replicate, archive, or share application data easily.
+3. AWS DataSync supports moving data between other public clouds and AWS Storage services.
 
-to incrementally perform migrations of all VMs in the data center to AWS as AMIs for Amazon EC2. AWS SMS helps minimize downtime due to the incremental nature of the migrations. You can use it to easily migrate existing virtual machines from vCenter to AWS Amazon EC2 instances.  
-Reference: [AWS SMS (deprecated?)](https://www.amazonaws.cn/en/server-migration-service/faqs/)
+Use case: You work for an advertising company that has a large amount of data hosted on-premises. They would like to move this data to AWS and then decommission the on-premises data center. What would be the easiest way to achieve this?This is the best answer because you are decommissioning the on-premises infrastructure, so you should use AWS DataSync to migrate the data to AWS.
 
-#### AWS MGN (Application Migration Service)
+Reference: [AWS DataSync](https://aws.amazon.com/datasync/)
 
-AWS MGN is a service meant to simplify and optimize the lift-and-shift process for migrating existing on-premises infrastructure to the AWS cloud. It will automatically convert and launch your servers into AWS, so you can take advantage of all of the AWS benefits.  
-Reference: [AWS MGN](https://aws.amazon.com/application-migration-service/)
+#### AWS Transfer Family
 
-#### AWS DMS (Database Migration Service)
+AWS Transfer Family securely scales your recurring business-to-business file transfers to AWS Storage services using SFTP, FTPS, FTP, and AS2 protocols. You can switch out, e.g., sftp, endpoints to be the substitute for servers for populations of legacy systems and users which still use those protocols for data exchange. The substitute will, however, be S3 / EFS technology. Note: secure protocols can access this service directly from the public internet, while ftp will only work within a VPC (potentially opened up using a NLB).
 
-AWS DMS is a database migration service that is meant for only migrating database instances. It makes it easy to migrate your relational databases, data warehouses, NoSQL databases, and other data stores to or from the AWS cloud. You can do ongoing replications or just one-time migrations.
-AWS DMS offers the ability to enable Change Data Capture during migrations, which allows replication of ongoing data changes from the source to your target data store. This allows you to ensure all data is synced post migration.  
-Reference: [AWS DMS](https://aws.amazon.com/dms/)
+Hourly rate, while protocol is being served actively, plus amount of traffic.
+
+Reference: [AWS Transfer Family](https://aws.amazon.com/aws-transfer-family/)
 
 #### AWS Migration Hub
 
-AWS Migration Hub does not perform migrations as it is meant to provide a single place to view and track existing and new migration efforts between other AWS services.
+AWS Migration Hub does not perform migrations as it is meant to provide a single place to view and track existing and new migration efforts between other AWS services. It provides access to the tools you need to collect and inventory your existing IT assets based on actual usage, analyze application components and infrastructure dependencies, and group resources into applications. You can generate migration strategy and Amazon Elastic Compute Cloud (EC2) instance recommendations for business case and migration planning, track the progress of application migrations to AWS, and modernize applications already running on AWS.
+
+It integrates with [SMS/MGN](#aws-application-migration-service-mgn) and [DMS](#aws-database-migration-service-dms).
+
+Reference: [Migration Hub](https://aws.amazon.com/migration-hub/?nc=sn&loc=0)
+
+#### AWS Application Migration Service (MGN)
+
+AWS MGN is a service meant to simplify and optimize the lift-and-shift process for migrating existing on-premises infrastructure to the AWS cloud. It will automatically convert and launch your servers into AWS, so you can take advantage of all of the AWS benefits. Uses an agent to be installed on the migration source.
+
+Recovery point objective and recovery time objective (RTO) are among a data protection or disaster recovery plan’s most important parameters. Recovery time objective (RTO) is measured in minutes, depending on OS boot time. Recovery point objective (RPO) is measured in sub-seconds - so hardly any data loss will occur when switching machines.
+
+Reference: [AWS MGN](https://aws.amazon.com/application-migration-service/)
+
+#### AWS Application Discovery Service (ADS)
+
+AWS Application Discovery Service collects both server and database configuration information for on-premises data centers. Server information includes host names, IP addresses, MAC addresses, as well as the resource allocation and utilization details of key resources such as CPU, network, memory, and disk. Collected database information includes the database engine identity, version, and edition.
+
+It supports both agent-based (installed on each physical server) and agentless (a virtual application deployed on on-prem VMware vCenter) tooling to be deployed on-premises, in addition to file-based import. Agent-based discovery provides superior intelligence, naturally.
+
+Reference: [ADS](https://aws.amazon.com/application-discovery/?nc2=h_ql_prod_mt_ads)
+
+#### AWS Server Migration Service (SMS)
+
+This is deprecated in favor of [MGN](#aws-application-migration-service-mgn).
+
+Use the server migration service to incrementally perform migrations of all VMs in the data center to into AMIs for Amazon EC2. AWS SMS helps minimize downtime due to the incremental nature of the migrations. You can use it to easily migrate existing virtual machines from vCenter to AWS Amazon EC2 instances.
+Works without an agent to be installed on the migration source.
+
+Reference: [AWS SMS (deprecated?)](https://www.amazonaws.cn/en/server-migration-service/faqs/)
+
+#### AWS Database Migration Service (DMS)
+
+AWS DMS is a database migration service that is meant for only migrating database instances. It makes it easy to migrate your relational databases, data warehouses, NoSQL databases, and other data stores to or from the AWS cloud. You can do ongoing replications or just one-time migrations.
+AWS DMS offers the ability to enable Change Data Capture during migrations, which allows replication of ongoing data changes from the source to your target data store. This allows you to ensure all data is synced post migration. DMS server runs replication software on a server that executes specified tasks.
+
+The *AWS Schema Conversion Tool* (SCT) determines how to move tables into a potentially more modern system:
+
+- Leverage the SCT to convert existing database schemas from one engine to another.
+- Convert many types of relational databases, including both OLAP and OLTP. It even supports data warehouses.
+- Converted schemas can be used for any supported Amazon RDS engine type, Amazon Aurora, or Amazon Redshift.
+- You can even use the converted schemas with databases running on EC2 or data stored in S3.
+
+Features of DMS:
+
+- Source endpoints can be on-prem, or AWS EC2 / RDS, target can be RDS/Aurora.
+- One can also switch source (AWS) and target (on-prem) endpoints.
+- One can perform either:
+  1. a one-time (full load) migration,
+  2. or continuously perform change-data-capture from one point in time forward,
+  3. or do a full migration and keep the CDC running.
+- Optionally consolidate multiple DBs on different servers / DB types into one piece of infrastructure.
+- In case of network bandwidth being an issue, one can combine [Snow Family](#aws-snow-family---snowcone-snowball-edge-snowmobile) technology to migrate large data sets using DMS. In detail one would use the SCT to create a backup of the data on the, e.g., Snowball, and then load it to S3, where it can be picked up by DMS.
+
+References: [AWS DMS](https://aws.amazon.com/dms/) and [Schema Conversion Tool](https://aws.amazon.com/dms/schema-conversion-tool/)
 
 ---
 
 ### Mobile Apps and Media
+
+#### AWS Amplify
+
+AWS Amplify is a complete solution that lets frontend web and mobile developers easily build, ship, and host *full-stack* applications on AWS, with the flexibility to leverage the breadth of AWS services as use cases evolve. No cloud expertise needed.
+
+Amplify Hosting:
+
+- Provides common SPA frameworks, e.g. React, Angular, Vue, ...
+- Provides production and staging environments for FE / BE
+- Supports server-side-rendering (SSR)
+
+Amplify Studio:
+
+- Easy authentication and authorization for implementation within your applications.
+- Simplified dev. environment in the console.
+- Provides many ready-meal components to use in your app, backend cookbooks, ....
+
+Reference: [AWS Amplify](https://aws.amazon.com/amplify/)
+
+#### AWS Device Farm
+
+AWS Device Farm is an application testing service that lets you improve the quality of your web and mobile apps by testing them across an extensive range of desktop browsers and real mobile devices; without having to provision and manage any testing infrastructure. The service enables you to run your tests concurrently on multiple desktop browsers or real devices to speed up the execution of your test suite, and generates videos and logs to help you quickly identify issues with your app.
+
+Features:
+
+- It's usable on actual phones and tablets hosted by AWS.
+- Automated testing: Upload scripts or use built-in tests for automated
+parallel tests on mobile devices.
+- Remote access testing: Swipe, gesture, and interact with devices in real
+time via web browsers.
+
+Reference: [Device Farm](https://aws.amazon.com/device-farm/)
+
+#### Amazon Pinpoint
+
+Amazon Pinpoint offers marketers and developers one customizable tool to deliver customer communications across channels, segments, and campaigns at scale.
+
+Marketing tool providing communication channels, marketing messaging (e.g. campaigns, journeys, ...),transactional messaging and analytics (campaign results). It has ML capabilities, i.e., [recommender model](https://docs.aws.amazon.com/pinpoint/latest/userguide/ml-models.html).
+
+Reference: [Amazon Pinpoint](https://aws.amazon.com/pinpoint/?nc=bc&pg=rs)
 
 ---
 
