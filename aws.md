@@ -1987,10 +1987,6 @@ Amazon Translate is a Neural Machine Translation (MT) service for translating te
 
 Reference: [Translate](https://aws.amazon.com/translate/)
 
-#### 
-
-Reference: []()
-
 ---
 
 ### More difficult questions explained
