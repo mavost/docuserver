@@ -1890,9 +1890,106 @@ Marketing tool providing communication channels, marketing messaging (e.g. campa
 
 Reference: [Amazon Pinpoint](https://aws.amazon.com/pinpoint/?nc=bc&pg=rs)
 
+#### Amazon Elastic Transcoder
+
+Amazon Elastic Transcoder is a highly scalable, easy to use and cost effective way for developers and businesses to convert (or “transcode”) video and audio files from their source format into versions that will playback on devices like smartphones, tablets and PCs.
+
+Reference: [Elastic Transcoder](https://aws.amazon.com/de/elastictranscoder/)
+
+#### Amazon Kinesis Video Streams
+
+Amazon Kinesis Video Streams makes it easy to securely stream media from connected devices to AWS for storage, analytics, machine learning (ML), playback, and other processing. Kinesis Video Streams automatically provisions and elastically scales all the infrastructure needed to ingest streaming media from millions of devices.
+
+Uses cases:
+
+1. Smart Home: With Kinesis Video Streams, you can easily stream video and audio from camera-equipped home devices such as baby monitors, webcams, and home surveillance systems to AWS. You can then use the streams to build a variety of smart home applications ranging from simple media playback to intelligent lighting, climate control systems, and security solutions ([Amazon Ring](https://ring.com/)).
+2. Smart City: Many cities have installed large numbers of cameras at traffic lights, parking lots, shopping malls, and just about every public venue, capturing video 24/7. You can use Kinesis Video Streams to securely and cost-effectively ingest, store, playback, and analyze this massive volume of media data to help solve traffic problems, help prevent crime, dispatch emergency responders, and much more.
+3. Industrial Automation: You can use Kinesis Video Streams to collect a variety of time-encoded data such as RADAR and LIDAR signals, temperature profiles, and depth data from industrial equipment. You can then analyze the data using your favorite machine learning framework including Apache MxNet, TensorFlow, and OpenCV for industrial automation use cases like predictive maintenance. For example, you can predict the lifetime of a gasket or valve and schedule part replacement in advance, reducing downtime and defects in a manufacturing line.
+
+References: [Kinesis Video Streams](https://aws.amazon.com/kinesis/video-streams/)
+
 ---
 
 ### AI and Machine Learning
+
+#### Amazon Comprehend
+
+Amazon Comprehend is a natural language processing (NLP) service that uses machine learning to discover insights from text. Amazon Comprehend provides Custom Entity Recognition, Custom Classification, Key phrase Extraction, Sentiment Analysis, Entity Recognition, and more APIs so you can easily integrate natural language processing into your applications. You simply call the Amazon Comprehend APIs in your application and provide the location of the source document or text. The APIs will output entities, key phrases, sentiment, and language in a JSON format, which you can use in your application.
+
+Reference: [Comprehend](https://aws.amazon.com/comprehend/)
+
+#### Amazon Kendra
+
+Amazon Kendra is an intelligent search service powered by machine learning (ML). Amazon Kendra reimagines enterprise search for your websites and applications so your employees and customers can find the content they’re looking for, even when it’s scattered across multiple locations and content repositories within your organization. It uses Large Language Models (LLMs) to quickly create secure, generative AI-powered conversational experiences for your users on top of your enterprise content.
+
+Reference: [Kendra](https://aws.amazon.com/kendra/)
+
+#### Amazon Textract
+
+Amazon Textract is a machine learning (ML) service that automatically extracts text, handwriting, and data from scanned documents. It goes beyond simple optical character recognition (OCR) to identify, understand, and extract data from forms and tables. Today, many companies manually extract data from scanned documents such as PDFs, images, tables, and forms, or through simple OCR software that requires manual configuration (which often must be updated when the form changes). To overcome these manual and expensive processes, Textract uses ML to read and process any type of document, accurately extracting text, handwriting, tables, and other data with no manual effort. You can quickly automate document processing and act on the information extracted, whether you’re automating loans processing or extracting information from invoices and receipts. Textract can extract the data in minutes instead of hours or days. Additionally, you can add human reviews with Amazon Augmented AI to provide oversight of your models and check sensitive data.
+
+OCR is cheap while AI-driven extraction of tables / forms is 50x more expensive.
+
+Reference: [Textract](https://aws.amazon.com/textract/)
+
+#### Amazon Forecast
+
+Amazon Forecast uses machine learning (ML) to generate more accurate demand forecasts with just a few clicks, without requiring any prior ML experience. Amazon Forecast includes algorithms that are based on over twenty years of forecasting experience and developed expertise used by Amazon.com bringing the same technology used at Amazon to developers as a fully managed service, removing the need to manage resources. Amazon Forecast uses ML to learn not only the best algorithm for each item, but the best ensemble of algorithms for each item, automatically creating the best model for your data.
+
+Pricing consists of data training data upload and storage, billed training time per hour, and price on number of data points predicted / explained via API queries. Former two are cheap and prediction can be 400$ per 1 million points.
+
+Reference: [Forecast](https://aws.amazon.com/forecast/)
+
+#### Amazon Fraud Detector
+
+Amazon Fraud Detector is a fully managed service that makes it easy to identify potentially fraudulent online activities such as online payment fraud and fake account creation. Amazon Fraud Detector uses machine learning (ML) and 20 years of fraud detection expertise from Amazon Web Services (AWS) and Amazon.com to automatically identify potentially fraudulent activity and catch more fraud faster. With Amazon Fraud Detector, you can create a fraud detection model with just a few clicks and no prior ML experience. Amazon Fraud Detector handles all of the ML heavy lifting for you.
+
+Reference: [Fraud Detector](https://aws.amazon.com/fraud-detector/)
+
+#### Amazon Polly, Transcribe, Lex
+
+Polly: Amazon Polly uses deep learning technologies to synthesize natural-sounding human speech, so you can convert articles to speech. With dozens of lifelike voices across a broad set of languages, use Amazon Polly to build speech-activated applications.
+
+Transcribe: Amazon Transcribe is an automatic speech recognition service that makes it easy to add speech to text capabilities to any application. Transcribe’s features enable you to ingest audio input, produce easy to read and review transcripts, improve accuracy with customization, and filter content to ensure customer privacy.
+
+Lex: Amazon Lex is a fully managed artificial intelligence (AI) service with advanced natural language models to design, build, test, and deploy conversational interfaces in applications. Once built, your bot can be deployed directly to chat platforms, mobile clients, and IoT devices.
+
+References: [Polly](https://aws.amazon.com/polly/), [Transcribe](https://aws.amazon.com/transcribe/), and [Lex](https://aws.amazon.com/lex/)
+
+#### Amazon Rekognition
+
+Amazon Rekognition offers pre-trained and customizable computer vision (CV) capabilities to extract information and insights from your images and videos.
+
+Rekognition Image is an image recognition service that detects objects, scenes, activities, landmarks, faces, dominant colors, and image quality. Rekognition Image also extracts text, recognizes celebrities, and identifies inappropriate content in images. It also allows you to search and compare faces.
+
+Rekognition Video is a video recognition service that detects activities, understands the movement of people in frame, and recognizes objects, celebrities, and inappropriate content in videos stored in Amazon S3 and live video streams. Rekognition Video detects persons and tracks them through the video even when their faces are not visible, or as the whole person might go in and out of the scene. For example, this could be used in an application that sends a real-time notification when someone delivers a package to your door.
+
+Main use case is content moderation, i.e., filtering out inappropriate content introduced by social media users.
+
+Reference: [Rekognition](https://aws.amazon.com/rekognition/)
+
+#### Amazon Sagemaker
+
+SageMaker is a fully managed service to prepare data and build, train, and deploy machine learning (ML) models for any use case with fully managed infrastructure, tools, and workflows.
+
+Features four areas of operation:
+
+1. Ground Truth: Set up and manage labeling jobs for training datasets using active learning and human labeling.
+2. Notebook: Access a managed Jupyter Notebook environment.
+3. Training: Train and tune models.
+4. Inference: Package and deploy your machine learning models at scale. Two usage formats exists for inference: offline/batch usage and online/real time usage.
+
+Reference: [Sagemaker](https://aws.amazon.com/sagemaker/)
+
+#### Amazon Translate
+
+Amazon Translate is a Neural Machine Translation (MT) service for translating text between supported languages. Powered by deep learning methods, the service provides high-quality, affordable, and customizable language translation, enabling developers to translate company and user-authored content, or build applications requiring support across multiple languages. The service can be used via an API, enabling either real-time or batch translation of text from the source language to the target language.
+
+Reference: [Translate](https://aws.amazon.com/translate/)
+
+#### 
+
+Reference: []()
 
 ---
 
