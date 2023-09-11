@@ -146,38 +146,38 @@ Sequence:
 
 - When provisioning resources with a use case in mind which involves interaction with other services one should assign roles directly to the acting resource. In this way one does not have to involve user generation.
 
-1. Create a role with required secondary service policies
-2. Configure machine by assigning the role and downloading PEM credential key
-3. Copy IP address of launched instance
-4. Login to machine via ssh or direct connection in management console
+  1. Create a role with required secondary service policies.
+  2. Assign the role to the machine.
+  3. Access the machine via option (a) management console "direct connect" or by (b) downloading its PEM credential key and noting the public IP address. If it is located in a private subnet, one would require to use a bastion host as a jump point into AWS.
+  4. For option (b) login to machine via ssh:
 
-    ```bash
-    cd Downloads
-    # close access to other users
-    chmod 400 MACHINECREDENTIAL.pem
-    # enter machine and accept its ED25519 key fingerprint
-    ssh ec2-user@MACHINEIP -i MACHINECREDENTIAL.pem
-    # update machine
-    sudo su
-    yum update -y
-    # leave super user mode
-    exit
-    ```
+      ```bash
+      cd Downloads
+      # close access to other users
+      chmod 400 MACHINECREDENTIAL.pem
+      # enter machine and accept its ED25519 key fingerprint
+      ssh ec2-user@MACHINEIP -i MACHINECREDENTIAL.pem
+      # update machine
+      sudo su
+      yum update -y
+      # leave super user mode
+      exit
+      ```
 
-5. Given that machine IAM role includes S3 admin access:
+  5. Test the functionality of the role on the machine to work with secondary services, e.g., that the IAM role includes the S3 admin access policy:
 
-    ```bash
-    # list buckets in account
-    aws s3 ls
-    # create bucket
-    aws s3 mb training_dummy_1020202020
-    # create file
-    echo "hello, this is my dummy file" > hello.txt
-    # upload file
-    aws s3 cp hello.txt s3://training_dummy_1020202020
-    # list files in bucket
-    aws s3 ls s3://training_dummy_1020202020
-    ```
+      ```bash
+      # list buckets in account
+      aws s3 ls
+      # create bucket
+      aws s3 mb training_dummy_1020202020
+      # create file
+      echo "hello, this is my dummy file" > hello.txt
+      # upload file
+      aws s3 cp hello.txt s3://training_dummy_1020202020
+      # list files in bucket
+      aws s3 ls s3://training_dummy_1020202020
+      ```
 
 - Instead of the above, one could configure the aws CLI by running `aws configure` with a user's access key and secret access key, given the user carries the required permissions/policies, effectively hard-coding your security into the machine &rightarrow; not recommended
 - Roles in contrast can be altered and reassigned without disturbing a running instance to which they are attached.
@@ -961,7 +961,7 @@ Performant real time (Data Streams) or near real time (Firehose) message queue w
 
 #### AWS Step Functions
 
-It's a serverless orchestration service which cab tie together other AWS services using a graphical console to design and monitor workflows. It is perfectly integrated with the AWS service
+It's a serverless orchestration service which can tie together other AWS services using a graphical console to design and monitor workflows. It is perfectly integrated with the AWS service
 landscape, geared towards serverless architecture. All state machines are written in the *Amazon States Language* format.
 
 Principal components are:
@@ -1235,7 +1235,7 @@ Combines data from multiple sources (e.g., Amazon DynamoDB and AWS Lambda).
 
 ### Security
 
-#### DDOS Introduction
+#### DDoS Introduction
 
 A Distributed Denial of Service (DDoS) attack attempts to make your website or application unavailable to your end users.
 
