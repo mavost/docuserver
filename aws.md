@@ -549,7 +549,7 @@ Cooking recipe:
 
     - Default Security Group
     - Network Access Control List (NACL)
-    - Main Route Table  
+    - Main Route Table
 
 2. Adding representations of public/private subnets: CIDR Address ranges for VPC/subnets can go from 0.0.0.0/16 to 0.0.0.0/28 and IP address range for each subnet is reduced by 5 addresses reserved by AWS. Subnets can not span multiple AZs.
 3. Enabling auto-assignment of public IPs in public subnets
